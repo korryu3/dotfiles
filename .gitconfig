@@ -22,3 +22,7 @@
 	defaultBranch = main
 [push]
 	default = simple
+[sequence]
+	editor = code --wait
+[commit]
+	gpgsign = false

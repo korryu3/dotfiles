@@ -30,3 +30,5 @@ Host github.com
 - [ ] macOS system defaults (Dock, Finder, key repeat etc.)
 - [ ] Nix Home Manager migration
 - [ ] VSCode Settings Sync
+- [ ] Serena config (`~/.serena/serena_config.yml`) の管理（`projects` リストがPC固有で自動更新されるため要検討）
+- [ ] Brewfile の更新（このPCとの差分反映）

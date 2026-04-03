@@ -1,4 +1,41 @@
 {
+  "cleanupPeriodDays": 9999,
+  "permissions": {
+    "allow": [
+      "Read(~/.claude/context/handoffs)",
+      "Write(~/.claude/context/handoffs)",
+      "Edit(~/.claude/context/handoffs)",
+      "MultiEdit(~/.claude/context/handoffs)",
+      "Read(~/.claude/plans)",
+      "Write(~/.claude/plans)",
+      "Edit(~/.claude/plans)",
+      "MultiEdit(~/.claude/plans)"
+    ]
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude Codeが許可を求めています\" with title \"Claude Code\" subtitle \"確認待ち\" sound name \"Glass\"'"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.py"
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true
+  },
   "language": "japanese",
-  "effortLevel": "medium"
+  "effortLevel": "medium",
+  "autoUpdatesChannel": "stable"
 }

@@ -19,8 +19,15 @@ FILES=(
   .config/alacritty/keybindings.toml
   .config/mise/config.toml
   .config/git/ignore
+  .tmux.conf
+  .colima/default/colima.yaml
   .codex/config.toml
   .claude/settings.json
+  .claude/CLAUDE.md
+  .claude/statusline.py
+  .claude/rules
+  .claude/agents
+  .claude/skills
 )
 
 link_file() {

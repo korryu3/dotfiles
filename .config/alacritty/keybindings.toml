@@ -1,6 +1,7 @@
 [keyboard]
 bindings = [
    { key = "Comma", mods = "Command", command = { program = "sh", args = ["-c","open ~/.config/alacritty/alacritty.toml"] } },
-    { key = "N", mods = "Command", action = "SpawnNewInstance" }
+    { key = "N", mods = "Command", action = "SpawnNewInstance" },
+    { key = "Return", mods = "Shift", chars = "\u001b\r" }
 ]
 

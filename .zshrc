@@ -147,8 +147,8 @@ alias gpl="git pull"
 alias gl="git log --oneline"
 alias gres="git restore"
 alias gres-s="git restore --staged"
-alias=gd"git diff"
-alias=gd-s"git diff --staged"
+alias gd="git diff"
+alias gd-s="git diff --staged"
 alias gmom="git merge origin main"
 alias gsid='git switch $(git remote show origin | grep "HEAD branch" | awk "{print \$NF}")'
 
