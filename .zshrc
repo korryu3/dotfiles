@@ -115,10 +115,6 @@ export FPATH="$FPATH:$HOME/.zfunc"
 export FPATH="/opt/homebrew/share/zsh/site-functions:$FPATH"
 # <<<  <<<
 
-# >>> zsh-abbrの補完 >>>
-export FPATH="$(brew --prefix)/share/zsh-abbr:$FPATH"
-# <<< zsh-abbr <<<
-
 
 # 補完を有効にする
 # 初期設定
@@ -139,10 +135,6 @@ eval "$(starship init zsh)"
 # >>> zoxide (smart cd) >>>
 eval "$(zoxide init zsh)"
 # <<< zoxide <<<
-
-# >>> zsh-abbr >>>
-source $(brew --prefix)/share/zsh-abbr/zsh-abbr.zsh
-# <<< zsh-abbr <<<
 
 # >>> volta >>>
 export PATH="$HOME/.volta/bin:$PATH"
