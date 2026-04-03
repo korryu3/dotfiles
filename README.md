@@ -13,6 +13,10 @@ brew bundle --file=~/dotfiles/Brewfile.personal
 
 # 3. Symlinks
 cd ~/dotfiles && ./install.sh
+
+# 4. Brewfileにないパッケージを削除 (任意)
+brew bundle cleanup --file=~/dotfiles/Brewfile
+brew bundle cleanup --file=~/dotfiles/Brewfile --force  # 実際に削除
 ```
 
 ## SSH config (manual)

@@ -2,61 +2,14 @@
 ############################
 # 分割ファイルを読み込む様にする
 source ${HOME}/.zsh/basic.zsh
+typeset -U path fpath
 
 ############################
 
-
-
-# 
 setopt no_nomatch
 
 # 日本語の文字化け防止
 export LANG=ja_JP.UTF-8
-
-
-# ----------------------------------------------------------------------------------------
-# branch名を表示させるメソッドの設定
-
-# function rprompt-git-current-branch {
-#   local branch_name st branch_status
-
-#   if [ ! -e  ".git" ]; then
-#     # gitで管理されていないディレクトリは何も返さない
-#     return
-#   fi
-#   branch_name=`git rev-parse --abbrev-ref HEAD 2> /dev/null`
-#   st=`git status 2> /dev/null`
-#   if [[ -n `echo "$st" | grep "^nothing to"` ]]; then
-#     # 全てコミットされてクリーンな状態
-#     branch_status="%F{192}"
-#   elif [[ -n `echo "$st" | grep "^Untracked files"` ]]; then
-#     # gitに管理されていないファイルがある状態
-#     branch_status="%F{yellow}!"
-#   elif [[ -n `echo "$st" | grep "^Changes not staged for commit"` ]]; then
-#     # git addされていないファイルがある状態
-#     branch_status="%F{red}*"
-#   elif [[ -n `echo "$st" | grep "^Changes to be committed"` ]]; then
-#     # git commitされていないファイルがある状態
-#     branch_status="%F{red}+"
-#   elif [[ -n `echo "$st" | grep "^rebase in progress"` ]]; then
-#     # コンフリクトが起こった状態
-#     echo "%F{198}!!"
-#     return
-#   else
-#     # 上記以外の状態の場合は青色で表示させる
-#     branch_status=""
-#   fi
-#   # ブランチ名を色付きで表示する
-#   echo "${branch_status}[$branch_name]"
-# }
-
-
-# ----------------------------------------------------------------------------------------
-
-# # promptの設定
-# PROMPT='''  `rprompt-git-current-branch`
-# %F{cyan}%~%f %F{magenta}%B〉%b%f'''
-# PROMPT='%F{green}%m@%n%f %F{cyan}%~%f$ '
 
 # historyのsize
 export HISTSIZE=100000
@@ -96,28 +49,6 @@ setopt list_packed
 # http://voidy21.hatenablog.jp/entry/20090902/1251918174
 setopt auto_param_slash      # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
 setopt mark_dirs             # ファイル名の展開でディレクトリにマッチした場合 末尾に / を付加
-
-
-
-# ----------------------------------------------------------------------------------------
-# zsh-completions(補完機能)の設定
-# ----------------------------------------------------------------------------------------
-# if [ -e /usr/local/share/zsh-completions ]; then
-#     fpath=(/usr/local/share/zsh-completions $fpath)
-# fi
-# autoload -U compinit
-# compinit -u
-
-
-# コマンド実行後に1行空ける
-add_newline() {
-    if [[ -z $PS1_NEWLINE_LOGIN ]]; then
-        PS1_NEWLINE_LOGIN=true
-    else
-        printf '\n'
-    fi
-}
-
 
 
 # ----------------------------------------------------------------------------------------
@@ -178,46 +109,6 @@ export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 # <<< Homebrew用のパス優先度 <<<
 
 
-
-# >>> Hyper >>>
-
-# Override auto-title when static titles are desired ($ title My new title)
-title() { export TITLE_OVERRIDDEN=1; echo -en "\e]0;$*\a"}
-# Turn off static titles ($ autotitle)
-autotitle() { export TITLE_OVERRIDDEN=0 }; autotitle
-# Condition checking if title is overridden
-overridden() { [[ $TITLE_OVERRIDDEN == 1 ]]; }
-# Echo asterisk if git state is dirty
-gitDirty() { [[ $(git status 2> /dev/null | grep -o '\w\+' | tail -n1) != ("clean"|"") ]] && echo "*" }
-
-# Show cwd when shell prompts for input.
-precmd() {
-   if overridden; then return; fi
-   cwd=${$(pwd)##*/} # Extract current working dir only
-#    cwd=${$(pwd)} # Extract current working dir
-   print -Pn "\e]0;$cwd$(gitDirty)\a" # Replace with $pwd to show full path
-
-    add_newline 
-}
-
-# Prepend command (w/o arguments) to cwd while waiting for command to complete.
-preexec() {
-   if overridden; then return; fi
-   printf "\033]0;%s\a" "${1%% *} | $cwd$(gitDirty)" # Omit construct from $1 to show args
-}
-
-# <<< Hyper <<<
-
-
-
-# >>> Azure CLI >>>
-
-# autoload bashcompinit && bashcompinit
-# source $(brew --prefix)/etc/bash_completion.d/az
-
-# <<< Azure CLI <<<
-
-
 # >>> .zfuncの補完ファイルを読み込む >>>
 export FPATH="$FPATH:$HOME/.zfunc"
 # <<< Poetry <<<
@@ -236,11 +127,6 @@ export FPATH="$(brew --prefix)/share/zsh-abbr:$FPATH"
 # 初期設定
 autoload -Uz compinit
 compinit
-
-
-# >>> Anaconda3 >>>
-# export PATH="/opt/homebrew/anaconda3/bin:$PATH"  # commented out by conda initialize
-# <<< Anaconda3 <<<
 
 
 # >>> mise (programing laguages version manager) >>>
@@ -267,41 +153,8 @@ export PATH="$HOME/.volta/bin:$PATH"
 # make
 export PATH="/opt/homebrew/opt/make/libexec/gnubin:$PATH"
 
-# bison
-export PATH="/opt/homebrew/opt/bison/bin:$PATH"
-
 # uv
 eval "$(uv generate-shell-completion zsh)"
-
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-
-# PHP pkg-config
-# libiconv
-export LIBICONV_PREFIX="$(brew --prefix libiconv)"
-export CPPFLAGS="-I$LIBICONV_PREFIX/include ${CPPFLAGS}"
-export LDFLAGS="-L$LIBICONV_PREFIX/lib ${LDFLAGS}"
-export PKG_CONFIG_PATH="$LIBICONV_PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH}"
-# openssl
-export OPENSSL_PREFIX="$(brew --prefix openssl@3)"
-export PKG_CONFIG_PATH="$OPENSSL_PREFIX/lib/pkgconfig"
-export CPPFLAGS="-I$OPENSSL_PREFIX/include"
-export LDFLAGS="-L$OPENSSL_PREFIX/lib"
-export PHP_BUILD_CONFIGURE_OPTS="--with-openssl=$OPENSSL_PREFIX"
-
-# tkinter
-# tkinterPath="/opt/homebrew/opt/tcl-tk"
-# export PATH="$tkinterPath/bin:$PATH"
-# export LDFLAGS="-L$tkinterPath/lib"
-# export CPPFLAGS="-I$tkinterPath/include"
-# export PKG_CONFIG_PATH="$tkinterPath/lib/pkgconfig"
-
-# PATHとFPATHの重複を削除する
-export PATH=$(echo $PATH | tr ':' '\n' | awk '!a[$0]++' | paste -sd: -)
-export FPATH=$(echo $FPATH | tr ':' '\n' | awk '!a[$0]++' | paste -sd: -)
-
 
 # 履歴をGUIで検索できるようにする# fzf history
 function fzf-select-history() {
@@ -330,9 +183,6 @@ autoload -U +X bashcompinit && bashcompinit
 
 # Terraform
 complete -o nospace -C /opt/homebrew/bin/terraform terraform
-
-# Added by Antigravity
-export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
 # Added by ClaudeCode
 export PATH="$HOME/.local/bin:$PATH"

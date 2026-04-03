@@ -9,7 +9,12 @@
       "Read(~/.claude/plans)",
       "Write(~/.claude/plans)",
       "Edit(~/.claude/plans)",
-      "MultiEdit(~/.claude/plans)"
+      "MultiEdit(~/.claude/plans)",
+      "Skill(creating-plan)",
+      "Skill(resuming-session)",
+      "Skill(saving-session)",
+      "Skill(skill-creator)",
+      "Skill(tdd)"
     ]
   },
   "hooks": {
