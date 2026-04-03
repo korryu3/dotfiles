@@ -40,7 +40,6 @@
     "context7@claude-plugins-official": true,
     "code-review@claude-plugins-official": true
   },
-  "plansDirectory": "~/.claude/context/default/plans",
   "language": "japanese",
   "effortLevel": "medium",
   "autoUpdatesChannel": "stable"
