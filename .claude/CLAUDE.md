@@ -3,3 +3,5 @@
   - もし考えを変える場合は、コードによる裏付けと共に、その理由を明示してください。
 - 実装はSubAgentに委託し、オーケストレーターのコンテキストを最小限に保つこと。SubAgentはコスト気にせず積極的に使ってよい。SubAgentの実装完了後は結果を確認してからユーザーに報告する。
 - 出力が長くなるコマンドは `run-command` agent（promptにコマンドを渡す）で実行すること。
+- 日本語と英語の間にスペースを入れない（例: ✕「React を使用」→ ○「Reactを使用」）
+- ファイルの保存先を指定されていない場合、`~/.claude/context/<PROJECT_ID>/notes/`配下に保存する。PROJECT_IDは`~/.claude/scripts/project-id.sh`で取得する。
