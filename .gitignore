@@ -1,0 +1,4 @@
+.DS_Store
+
+# マシン固有設定
+.zshrc.local

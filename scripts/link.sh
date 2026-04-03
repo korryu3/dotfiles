@@ -1,0 +1,65 @@
+#!/bin/bash
+set -euo pipefail
+
+DOTFILES_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+HOME_DIR="$HOME"
+BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y-%m-%d_%H%M%S)"
+
+# リンク対象ファイル: リポジトリ内の相対パス
+FILES=(
+  .zshrc
+  .zshenv
+  .zprofile
+  .zsh
+  .gitconfig
+  .vimrc
+  .config/starship.toml
+  .config/ghostty/config
+  .config/alacritty/alacritty.toml
+  .config/alacritty/keybindings.toml
+  .config/mise/config.toml
+  .config/git/ignore
+  .codex/config.toml
+  .claude/settings.json
+)
+
+link_file() {
+  local src="$DOTFILES_DIR/$1"
+  local dest="$HOME_DIR/$1"
+
+  # ソースが存在しなければスキップ
+  if [[ ! -e "$src" ]]; then
+    echo "  スキップ (ソースなし): $1"
+    return
+  fi
+
+  # 既に正しいリンクならスキップ
+  if [[ -L "$dest" ]] && [[ "$(readlink "$dest")" == "$src" ]]; then
+    echo "  リンク済み: $1"
+    return
+  fi
+
+  # 親ディレクトリ作成
+  mkdir -p "$(dirname "$dest")"
+
+  # 既存ファイルがあればバックアップ
+  if [[ -e "$dest" ]] || [[ -L "$dest" ]]; then
+    local backup_path="$BACKUP_DIR/$1"
+    mkdir -p "$(dirname "$backup_path")"
+    mv "$dest" "$backup_path"
+    echo "  バックアップ: $1 → $BACKUP_DIR/$1"
+  fi
+
+  ln -s "$src" "$dest"
+  echo "  リンク作成: $1"
+}
+
+echo "=== シンボリックリンク作成 ==="
+echo ""
+
+for file in "${FILES[@]}"; do
+  link_file "$file"
+done
+
+echo ""
+echo "完了!"
