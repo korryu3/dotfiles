@@ -8,6 +8,8 @@ git clone https://github.com/KorRyu3/dotfiles.git ~/dotfiles
 
 # 2. Brew packages
 brew bundle --file=~/dotfiles/Brewfile
+# 個人用パッケージ (任意)
+brew bundle --file=~/dotfiles/Brewfile.personal
 
 # 3. Symlinks
 cd ~/dotfiles && ./install.sh
@@ -31,4 +33,3 @@ Host github.com
 - [ ] Nix Home Manager migration
 - [ ] VSCode Settings Sync
 - [ ] Serena config (`~/.serena/serena_config.yml`) の管理（`projects` リストがPC固有で自動更新されるため要検討）
-- [ ] Brewfile の更新（このPCとの差分反映）

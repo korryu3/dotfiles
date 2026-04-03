@@ -1,0 +1,4 @@
+tap "gcenx/wine"
+brew "winetricks"
+cask "cyberduck"
+cask "gcenx/wine/wine-crossover"
