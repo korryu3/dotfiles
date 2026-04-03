@@ -21,20 +21,14 @@ if type brew &>/dev/null; then
 fi
 
 
-# ls
-export LSCOLORS=gxfxcxdxbxegedabagacag
-export LS_COLORS='di=36;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;46'
-
-# lsがカラー表示になるようエイリアスを設定
-case "${OSTYPE}" in
-darwin*)
-  # Mac
-  alias ls="ls -GF"
-  ;;
-esac
-
+# ls (eza)
+alias ls="eza --icons --git"
+alias ll="eza --icons --git -l"
+alias la="eza --icons --git -la"
+alias lt="eza --icons --git --tree --level=2"
 
 # 補完候補に色つける
+export LS_COLORS='di=36;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;46'
 autoload -U colors
 colors
 zstyle ':completion:*' list-colors "${LS_COLORS}"
