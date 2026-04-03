@@ -61,6 +61,19 @@ link_file() {
   echo "  リンク作成: $1"
 }
 
+# dotfilesを指す壊れたシンボリックリンクを削除
+echo "=== 壊れたリンクの掃除 ==="
+echo ""
+
+find "$HOME_DIR" -maxdepth 5 -type l 2>/dev/null | while read -r link; do
+  target=$(readlink "$link")
+  if [[ "$target" == "$DOTFILES_DIR/"* ]] && [[ ! -e "$link" ]]; then
+    echo "  壊れたリンク削除: $link"
+    rm "$link"
+  fi
+done || true
+
+echo ""
 echo "=== シンボリックリンク作成 ==="
 echo ""
 
