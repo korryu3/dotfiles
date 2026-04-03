@@ -4,13 +4,13 @@ set -euo pipefail
 echo "=== ツール初期化 ==="
 echo ""
 
-# Rust toolchain
-if command -v rustup &>/dev/null; then
-  if rustup toolchain list | grep -q stable; then
-    echo "  Rust stable: インストール済み"
+# Rust (via rustup-init)
+if command -v rustup-init &>/dev/null; then
+  if [[ -f "$HOME/.cargo/env" ]]; then
+    echo "  Rust: インストール済み"
   else
-    echo "  Rust stable をインストール中..."
-    rustup toolchain install stable
+    echo "  Rust をインストール中..."
+    rustup-init -y
   fi
 else
   echo "  スキップ (rustup未インストール): Rust"
@@ -34,7 +34,7 @@ if command -v uv &>/dev/null; then
     echo "  Python (uv): インストール済み"
   else
     echo "  Python をインストール中..."
-    uv python install
+    uv python install --default --preview-features python-install-default
   fi
 else
   echo "  スキップ (uv未インストール): Python"
