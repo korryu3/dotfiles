@@ -1,7 +1,7 @@
 ---
 name: saving-session
 description: 現在のセッションの作業状態・判断・残タスクを引き継ぎドキュメントとして保存する。セッションの中断時やコンテキストが複雑になってきたときに使用される。
-allowed-tools: Write, Edit, AskUserQuestion
+allowed-tools: Write, Edit, AskUserQuestion, Bash(~/.claude/scripts/project-id.sh)
 ---
 
 # セッション保存
@@ -39,7 +39,7 @@ session_topic: （一言で何のセッションだったか）
 
 ## 前回のセッション
 このセッションが前回の引き継ぎから再開された場合に記載する。
-- 前回のドキュメント: `~/.claude/context/handoffs/YYYY-MM-DD/xxx.md`
+- 前回のドキュメント: `~/.claude/context/<PROJECT_ID>/handoffs/YYYY-MM-DD/xxx.md`
 - 前回からの要約:（今回の作業を理解するのに必要な範囲で、前回までの経緯を要約する）
 
 ## ゴール
@@ -88,13 +88,15 @@ session_topic: （一言で何のセッションだったか）
 
 ## 保存先
 
-`~/.claude/context/handoffs/YYYY-MM-DD/<トピック>.md`
+`~/.claude/context/<PROJECT_ID>/handoffs/YYYY-MM-DD/<トピック>.md`
+
+PROJECT_ID は `~/.claude/scripts/project-id.sh` を実行して取得する（例: `/Users/foo/bar` → `-Users-foo-bar`）。取得できない場合は `default` を使用。
 
 ## 手順
 
 ```
 - [ ] セッション全体を振り返り、テンプレートに沿って引き継ぎドキュメントを作成
-- [ ] `~/.claude/context/handoffs/` ディレクトリがなければ作成
+- [ ] `~/.claude/context/<PROJECT_ID>/handoffs/YYYY-MM-DD/` ディレクトリがなければ作成
 - [ ] ドキュメントを保存
 - [ ] ユーザーに内容を提示して「修正したい箇所はありますか？」と確認
 - [ ] コピペ用コマンドを表示
@@ -107,7 +109,7 @@ session_topic: （一言で何のセッションだったか）
 保存後、次のセッションでそのまま貼り付けて使えるコマンドを表示する：
 
 ```
-/resuming-session ~/.claude/context/handoffs/YYYY-MM-DD/<トピック>.md
+/resuming-session ~/.claude/context/<PROJECT_ID>/handoffs/YYYY-MM-DD/<トピック>.md
 ```
 
 実際のファイルパスを埋めること。

@@ -1,14 +1,15 @@
 ---
 name: creating-plan
 description: 実装前のPlan作成と反復レビューを行うオーケストレーションフローを実行する。ユーザーが実装を依頼した場合や、複雑なタスクに取り組む前に使用する。
-allowed-tools: Read, Grep, Glob, Write, Agent, AskUserQuestion
+allowed-tools: Read, Grep, Glob, Write, Agent, AskUserQuestion, Bash(~/.claude/scripts/project-id.sh)
 ---
 
 ## 前提
 
 - plan-creator agent: Plan作成
 - plan-reviewer agent: レビュー（観点はプロンプトで指定）
-- Plan出力先: `~/.claude/plans/<plan-name>/`
+- PROJECT_ID: `~/.claude/scripts/project-id.sh` を実行して取得する（例: `/Users/foo/bar` → `-Users-foo-bar`）。取得できない場合は `default` を使用
+- Plan出力先: `~/.claude/context/<PROJECT_ID>/plans/<plan-name>/`
 
 ## 進行チェックリスト
 
@@ -35,6 +36,8 @@ plan-creator agent を起動し、以下を渡す:
 - ユーザーのタスク内容（$ARGUMENTS またはこれまでの会話から）
 - Plan名（タスク内容から適切な kebab-case 名を決定）
 
+フロー開始時に `~/.claude/scripts/project-id.sh` を実行して PROJECT_ID を取得する。
+plan-creator には Plan出力先の完全なパス `~/.claude/context/<PROJECT_ID>/plans/<plan-name>/` を渡す。
 plan-creator は plan.md、規模判定、不確実リスト、前提条件を返す。
 
 ### Step 2: 不確実リストの確認

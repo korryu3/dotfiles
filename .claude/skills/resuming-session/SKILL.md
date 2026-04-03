@@ -1,8 +1,8 @@
 ---
 name: resuming-session
 description: 前のセッションの引き継ぎドキュメントを読み込み、現在の状態と照合した上で作業を再開する。引数でファイルパスを指定可能。
-allowed-tools: Read, Glob, AskUserQuestion, Bash(git status), Bash(git log)
-argument-hint: "~/.claude/context/handoffs/YYYY-MM-DD/<トピック>.md"
+allowed-tools: Read, Glob, AskUserQuestion, Bash(git status), Bash(git log), Bash(~/.claude/scripts/project-id.sh)
+argument-hint: "~/.claude/context/<PROJECT_ID>/handoffs/YYYY-MM-DD/<トピック>.md"
 ---
 
 # セッション再開
@@ -13,10 +13,10 @@ argument-hint: "~/.claude/context/handoffs/YYYY-MM-DD/<トピック>.md"
 
 ### 1. ドキュメントを探す
 
-引数でファイルパスを受け取れる（例: `/resuming-session ~/.claude/context/handoffs/2026-01-01/auth-refactor.md`）。
+引数でファイルパスを受け取れる（例: `/resuming-session ~/.claude/context/-Users-foo-bar/handoffs/2026-01-01/auth-refactor.md`）。
 
 - 引数があればそれを読む
-- なければ `~/.claude/context/handoffs/` 配下の日付ディレクトリを確認し、選択UIを表示する：
+- なければ `~/.claude/scripts/project-id.sh` を実行して PROJECT_ID を取得し、`~/.claude/context/<PROJECT_ID>/handoffs/` 配下の日付ディレクトリを確認し、選択UIを表示する：
 
 ```
 引き継ぎドキュメント一覧
@@ -48,7 +48,7 @@ frontmatter の `session_topic` と `created_at` で一覧を構成する。1つ
 ║  セッション再開: <session_topic>                    ║
 ╚══════════════════════════════════════════════════╝
 
-読み込んだファイル: ~/.claude/context/handoffs/YYYY-MM-DD/<トピック>.md
+読み込んだファイル: ~/.claude/context/<PROJECT_ID>/handoffs/YYYY-MM-DD/<トピック>.md
 保存日時: YYYY-MM-DD HH:MM
 
 ## 状態照合

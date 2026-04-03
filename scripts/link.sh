@@ -28,6 +28,7 @@ FILES=(
   .claude/rules
   .claude/agents
   .claude/skills
+  .claude/scripts
 )
 
 link_file() {

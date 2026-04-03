@@ -2,14 +2,14 @@
   "cleanupPeriodDays": 9999,
   "permissions": {
     "allow": [
-      "Read(~/.claude/context/handoffs)",
-      "Write(~/.claude/context/handoffs)",
-      "Edit(~/.claude/context/handoffs)",
-      "MultiEdit(~/.claude/context/handoffs)",
-      "Read(~/.claude/plans)",
-      "Write(~/.claude/plans)",
-      "Edit(~/.claude/plans)",
-      "MultiEdit(~/.claude/plans)",
+      "Read(~/.claude/context/**)",
+      "Write(~/.claude/context/**)",
+      "Edit(~/.claude/context/**)",
+      "MultiEdit(~/.claude/context/**)",
+      "Read(~/.claude/plans/**)",
+      "Write(~/.claude/plans/**)",
+      "Edit(~/.claude/plans/**)",
+      "MultiEdit(~/.claude/plans/**)",
       "Skill(creating-plan)",
       "Skill(resuming-session)",
       "Skill(saving-session)",
@@ -40,6 +40,7 @@
     "context7@claude-plugins-official": true,
     "code-review@claude-plugins-official": true
   },
+  "plansDirectory": "~/.claude/context/default/plans",
   "language": "japanese",
   "effortLevel": "medium",
   "autoUpdatesChannel": "stable"
