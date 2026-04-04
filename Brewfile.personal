@@ -3,4 +3,13 @@ brew "winetricks"
 cask "codex"
 cask "cyberduck"
 cask "logi-options+"
+cask "discord"
+cask "onedrive"
 cask "gcenx/wine/wine-crossover"
+
+# --- Mac App Store ---
+mas "Keynote", id: 361285480
+mas "LINE", id: 539883307
+mas "Numbers", id: 361304891
+mas "Pages", id: 361309726
+mas "Prime Video", id: 545519333

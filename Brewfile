@@ -54,6 +54,9 @@ brew "lima-additional-guestagents"
 brew "hashicorp/tap/terraform"
 cask "gcloud-cli"
 
+# --- Package Management ---
+brew "mas"
+
 # --- Media ---
 brew "exiftool"
 brew "ffmpeg"
@@ -75,6 +78,13 @@ cask "slack"
 cask "usage-app"
 cask "visual-studio-code"
 cask "zen"
+cask "appcleaner"
+cask "coconutbattery"
+cask "zoom"
+
+# --- Mac App Store ---
+mas "SafeInCloud Password Manager", id: 883070818
+mas "RunCat", id: 1429033973
 
 # --- Fonts ---
 cask "font-hack-nerd-font"
