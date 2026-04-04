@@ -58,11 +58,6 @@ cask "gcloud-cli"
 brew "exiftool"
 brew "ffmpeg"
 
-# --- 3D ---
-brew "colmap"
-brew "rtabmap"
-cask "cloudcompare"
-
 # --- Apps ---
 cask "arc"
 cask "devtoys"

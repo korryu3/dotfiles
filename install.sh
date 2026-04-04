@@ -2,9 +2,11 @@
 set -uo pipefail
 
 PERSONAL=false
+THREE_D=false
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --personal|-p) PERSONAL=true; shift ;;
+    --3d) THREE_D=true; shift ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
 done
@@ -41,6 +43,10 @@ run_step "brew bundle (Brewfile)" brew bundle --file="$(dirname "$0")/Brewfile"
 
 if [[ "$PERSONAL" == true ]]; then
   run_step "brew bundle (Brewfile.personal)" brew bundle --file="$(dirname "$0")/Brewfile.personal"
+fi
+
+if [[ "$THREE_D" == true ]]; then
+  run_step "brew bundle (Brewfile.3d)" brew bundle --file="$(dirname "$0")/Brewfile.3d"
 fi
 
 echo ""
