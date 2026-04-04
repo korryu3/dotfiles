@@ -16,7 +16,8 @@
       "Skill(resuming-session)",
       "Skill(saving-session)",
       "Skill(skill-creator)",
-      "Skill(tdd)"
+      "Skill(tdd)",
+      "Skill(nvim-sensei)"
     ]
   },
   "hooks": {
