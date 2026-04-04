@@ -91,6 +91,9 @@ echo "  表示遅延: 0"
 defaults write com.apple.dock show-recents -bool false
 echo "  最近使ったアプリ: OFF"
 
+defaults write com.apple.dock persistent-others -array
+echo "  Dockフォルダスタック: 削除"
+
 defaults write com.apple.dock mineffect -string "scale"
 echo "  ミニマイズエフェクト: scale"
 
@@ -121,6 +124,19 @@ echo "  拡張子変更警告: OFF"
 
 defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
 echo "  検索範囲: カレントフォルダ"
+
+defaults write com.apple.finder NewWindowTarget -string "PfHm"
+defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/"
+echo "  新規ウィンドウ: ホームフォルダ"
+
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+echo "  フォルダを上部にソート: ON"
+
+defaults write com.apple.finder FXRemoveOldTrashItems -bool true
+echo "  ゴミ箱30日自動削除: ON"
+
+defaults write com.apple.finder ShowMountedServersOnDesktop -bool true
+echo "  デスクトップにサーバー表示: ON"
 
 echo ""
 
