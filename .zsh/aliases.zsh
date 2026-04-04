@@ -4,6 +4,9 @@ alias ll="eza --icons --git -l"
 alias la="eza --icons --git -la"
 alias lt="eza --icons --git --tree --level=2"
 
+# bat (cat replacement)
+alias cat="bat"
+
 # Editor
 alias c="code ."
 
