@@ -225,32 +225,6 @@ echo "  表示カテゴリ: すべてのプロセス"
 echo ""
 
 # ---------------------------------------------------------------------------
-# Rectangle
-# ---------------------------------------------------------------------------
-echo "--- Rectangle ---"
-
-defaults write com.knollsoft.Rectangle launchOnLogin -bool true
-echo "  ログイン時に起動: ON"
-
-echo ""
-
-# ---------------------------------------------------------------------------
-# Arc
-# ---------------------------------------------------------------------------
-echo "--- Arc ---"
-
-defaults write company.thebrowser.Browser autoArchiveTimeThreshold -string "sevenDays"
-echo "  タブ自動アーカイブ: 7日"
-
-defaults write company.thebrowser.Browser nativeAdBlockEnabled -bool true
-echo "  広告ブロック: ON"
-
-defaults write company.thebrowser.Browser tidyTabsEnabled -bool true
-echo "  タブ整理: ON"
-
-echo ""
-
-# ---------------------------------------------------------------------------
 # 設定反映
 # ---------------------------------------------------------------------------
 echo "=== 設定反映 ==="
