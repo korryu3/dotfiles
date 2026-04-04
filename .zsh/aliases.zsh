@@ -6,6 +6,7 @@ alias lt="eza --icons --git --tree --level=2"
 
 # bat (cat replacement)
 alias cat="bat"
+alias catp="bat -p"
 
 # Editor
 alias c="code ."
