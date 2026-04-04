@@ -1,7 +1,7 @@
 ---
 name: tdd
 description: テスト駆動開発（TDD）ワークフローに従って実装を進める。機能追加・バグ修正・リファクタリングなど、プロダクションコードを書く場面で使用する。実装タスクの開始時にトリガーされる。
-allowed-tools: Read, Grep, Glob, Write, Edit, Bash(~/.claude/scripts/project-id.sh)
+allowed-tools: Read, Grep, Glob, Write, Edit
 ---
 
 # テスト駆動開発（TDD）

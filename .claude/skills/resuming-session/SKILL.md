@@ -1,7 +1,7 @@
 ---
 name: resuming-session
 description: 前のセッションの引き継ぎドキュメントを読み込み、現在の状態と照合した上で作業を再開する。引数でファイルパスを指定可能。
-allowed-tools: Read, Glob, AskUserQuestion, Bash(git status), Bash(git log), Bash(~/.claude/scripts/project-id.sh)
+allowed-tools: Read, Glob, AskUserQuestion, Bash(git status), Bash(git log)
 argument-hint: "~/.claude/context/<PROJECT_ID>/handoffs/YYYY-MM-DD/<トピック>.md"
 ---
 

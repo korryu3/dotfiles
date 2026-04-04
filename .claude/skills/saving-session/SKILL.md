@@ -1,7 +1,7 @@
 ---
 name: saving-session
 description: 現在のセッションの作業状態・判断・残タスクを引き継ぎドキュメントとして保存する。セッションの中断時やコンテキストが複雑になってきたときに使用される。
-allowed-tools: Write, Edit, AskUserQuestion, Bash(~/.claude/scripts/project-id.sh)
+allowed-tools: Write, Edit, AskUserQuestion
 ---
 
 # セッション保存

@@ -1,7 +1,7 @@
 ---
 name: creating-plan
 description: 実装前のPlan作成と反復レビューを行うオーケストレーションフローを実行する。ユーザーが実装を依頼した場合や、複雑なタスクに取り組む前に使用する。
-allowed-tools: Read, Grep, Glob, Write, Agent, AskUserQuestion, Bash(~/.claude/scripts/project-id.sh)
+allowed-tools: Read, Grep, Glob, Write, Agent, AskUserQuestion
 ---
 
 ## 前提
