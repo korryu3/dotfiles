@@ -1,4 +1,5 @@
 tap "gcenx/wine"
+brew "mas"
 brew "winetricks"
 cask "codex"
 cask "cyberduck"
@@ -11,6 +12,8 @@ cask "gcenx/wine/wine-crossover"
 mas "Keynote", id: 361285480
 mas "LINE", id: 539883307
 mas "Numbers", id: 361304891
-mas "Pages", id: 361309726
 mas "OneDrive", id: 823766827
+mas "Pages", id: 361309726
 mas "Prime Video", id: 545519333
+mas "RunCat", id: 1429033973
+mas "SafeInCloud Password Manager", id: 883070818
