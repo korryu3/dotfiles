@@ -42,5 +42,6 @@
   },
   "language": "japanese",
   "effortLevel": "medium",
-  "autoUpdatesChannel": "stable"
+  "autoUpdatesChannel": "stable",
+  "autoMemoryEnabled": false
 }
