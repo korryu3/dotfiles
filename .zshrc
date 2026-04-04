@@ -1,5 +1,5 @@
 : ${HOMEBREW_PREFIX:=$(brew --prefix)}
-source ${HOME}/.zsh/basic.zsh
+source ${HOME}/.zsh/plugins.zsh
 typeset -U path fpath
 
 # setopt
@@ -15,9 +15,6 @@ setopt complete_in_word
 setopt list_packed
 setopt auto_param_slash
 setopt mark_dirs
-
-# 言語
-export LANG=ja_JP.UTF-8
 
 # History
 export HISTSIZE=100000
@@ -41,48 +38,8 @@ export PATH="$HOME/.local/bin:$PATH"
 autoload -Uz compinit
 compinit
 
-# Alias: Editor
-alias c="code ."
-
-# Alias: Git
-gacpfunc() {
-	git commit -am "$*"
-	git push origin HEAD
-}
-alias gb="git branch"
-alias gb-d="git branch -d"
-alias gsi="git switch"
-alias gs="git status"
-alias ga="git add"
-alias gc="git commit"
-alias gp="git push"
-alias gacp=gacpfunc
-alias gf="git fetch"
-alias gpl="git pull"
-alias gl="git log --oneline"
-alias gres="git restore"
-alias gres-s="git restore --staged"
-alias gd="git diff"
-alias gd-s="git diff --staged"
-alias gmom="git merge origin main"
-alias gsid='git switch $(git remote show origin | grep "HEAD branch" | awk "{print \$NF}")'
-
-# Alias: Docker
-alias d="docker"
-alias dcm="docker-compose"
-
-# Alias: Terraform
-alias tf="terraform"
-
-# Alias: Homebrew
-alias bi="brew install"
-alias bi-c="brew install --cask"
-alias bl="brew list"
-alias bu="brew upgrade"
-alias bup="brew update"
-
-# Alias: act
-alias act="act --container-architecture linux/amd64"
+# Aliases
+source ${HOME}/.zsh/aliases.zsh
 
 # mise
 eval "$(${HOMEBREW_PREFIX}/opt/mise/bin/mise activate zsh)"
