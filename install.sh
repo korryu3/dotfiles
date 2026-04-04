@@ -1,6 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
+PERSONAL=false
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --personal|-p) PERSONAL=true; shift ;;
+    *) echo "Unknown option: $1"; exit 1 ;;
+  esac
+done
+
 SCRIPT_DIR="$(cd "$(dirname "$0")/scripts" && pwd)"
 
 echo "=============================="
@@ -21,8 +29,7 @@ echo "=== パッケージインストール ==="
 echo ""
 brew bundle --file="$(dirname "$0")/Brewfile"
 
-read -rp "個人用パッケージもインストールしますか？ [y/N] " answer
-if [[ "$answer" =~ ^[Yy]$ ]]; then
+if [[ "$PERSONAL" == true ]]; then
   brew bundle --file="$(dirname "$0")/Brewfile.personal"
 fi
 

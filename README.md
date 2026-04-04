@@ -6,8 +6,11 @@
 # 1. Clone
 git clone https://github.com/KorRyu3/dotfiles.git ~/dotfiles
 
-# 2. Install (Homebrew導入 → パッケージ → シンボリックリンク → セットアップ)
+# 2. Install (Homebrew導入 → パッケージ → シンボリックリンク → セットアップ → macOS設定)
 cd ~/dotfiles && ./install.sh
+
+# 個人用パッケージも含める場合
+cd ~/dotfiles && ./install.sh --personal
 
 # 3. Brewfileにないパッケージを削除 (任意)
 brew bundle cleanup --file=~/dotfiles/Brewfile
