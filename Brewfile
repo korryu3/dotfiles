@@ -80,6 +80,7 @@ cask "visual-studio-code"
 cask "zen"
 cask "appcleaner"
 cask "coconutbattery"
+cask "scroll-reverser"
 cask "zoom"
 
 # --- Mac App Store ---
