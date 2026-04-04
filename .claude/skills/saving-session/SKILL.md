@@ -90,7 +90,7 @@ session_topic: （一言で何のセッションだったか）
 
 `~/.claude/context/<PROJECT_ID>/handoffs/YYYY-MM-DD/<トピック>.md`
 
-PROJECT_ID は `~/.claude/scripts/project-id.sh` を実行して取得する（例: `/Users/foo/bar` → `-Users-foo-bar`）。取得できない場合は `default` を使用。
+PROJECT_IDは `~/.claude/scripts/project-id.sh` を実行して取得する（例: `/Users/foo/bar` → `-Users-foo-bar`）。取得できない場合は `default` を使用。
 
 ## 手順
 

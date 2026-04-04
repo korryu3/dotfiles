@@ -16,7 +16,7 @@ argument-hint: "~/.claude/context/<PROJECT_ID>/handoffs/YYYY-MM-DD/<トピック
 引数でファイルパスを受け取れる（例: `/resuming-session ~/.claude/context/-Users-foo-bar/handoffs/2026-01-01/auth-refactor.md`）。
 
 - 引数があればそれを読む
-- なければ `~/.claude/scripts/project-id.sh` を実行して PROJECT_ID を取得し、`~/.claude/context/<PROJECT_ID>/handoffs/` 配下の日付ディレクトリを確認し、選択UIを表示する：
+- なければ `~/.claude/scripts/project-id.sh` を実行してPROJECT_IDを取得し、`~/.claude/context/<PROJECT_ID>/handoffs/` 配下の日付ディレクトリを確認し、選択UIを表示する：
 
 ```
 引き継ぎドキュメント一覧
@@ -28,7 +28,7 @@ argument-hint: "~/.claude/context/<PROJECT_ID>/handoffs/YYYY-MM-DD/<トピック
 番号で選択してください
 ```
 
-frontmatter の `session_topic` と `created_at` で一覧を構成する。1つしかなければそのまま読む。
+frontmatterの `session_topic` と `created_at` で一覧を構成する。1つしかなければそのまま読む。
 
 ### 2. 事前読み込み
 
