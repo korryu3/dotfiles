@@ -30,6 +30,7 @@ FILES=(
   .claude/skills
   .claude/scripts
   .config/bat/config
+  .config/nvim
 )
 
 link_file() {
