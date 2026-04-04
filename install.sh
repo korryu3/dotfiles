@@ -1,6 +1,8 @@
 #!/bin/bash
 set -uo pipefail
 
+ulimit -n 65536 2>/dev/null
+
 PERSONAL=false
 THREE_D=false
 while [[ $# -gt 0 ]]; do
