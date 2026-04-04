@@ -1,5 +1,12 @@
 # dotfiles
 
+![Zsh](https://img.shields.io/badge/-Zsh-000?style=flat-square&logo=zsh)
+![Neovim](https://img.shields.io/badge/-Neovim-57A143?style=flat-square&logo=neovim&logoColor=white)
+![Ghostty](https://img.shields.io/badge/-Ghostty-333?style=flat-square&logo=ghostty&logoColor=white)
+![Starship](https://img.shields.io/badge/-Starship-DD0B78?style=flat-square&logo=starship&logoColor=white)
+![Homebrew](https://img.shields.io/badge/-Homebrew-FBB040?style=flat-square&logo=homebrew&logoColor=black)
+![macOS](https://img.shields.io/badge/-macOS-000?style=flat-square&logo=apple&logoColor=white)
+
 ## Setup
 
 ```bash
