@@ -9,6 +9,9 @@ echo ""
 # ---------------------------------------------------------------------------
 echo "--- NSGlobalDomain ---"
 
+defaults write NSGlobalDomain AppleLanguages -array "en-JP" "ja-JP"
+echo "  言語優先順位: English, 日本語"
+
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 echo "  全拡張子表示: ON"
 
