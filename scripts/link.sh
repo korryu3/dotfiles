@@ -29,6 +29,7 @@ FILES=(
   .claude/agents
   .claude/skills
   .claude/scripts
+  .config/bat/config
 )
 
 link_file() {
