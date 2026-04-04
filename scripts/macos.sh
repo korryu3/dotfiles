@@ -101,10 +101,6 @@ echo "--- Finder ---"
 defaults write com.apple.finder FXPreferredViewStyle -string "clmv"
 echo "  デフォルト表示: カラム"
 
-defaults write com.apple.finder NewWindowTarget -string "PfLo"
-defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/Downloads/"
-echo "  新規ウィンドウ: ~/Downloads"
-
 defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false
 echo "  デスクトップにHDD表示: OFF"
 
