@@ -1,0 +1,5 @@
+- 設定ファイル（`~/.config/`配下等）を新規作成・変更する場合:
+  - dotfilesリポジトリで管理すべきか判断し、不明ならユーザーに確認する
+  - dotfilesに入れる場合は`scripts/link.sh`のFILES配列にも追記すること
+- 個人用パッケージは`Brewfile.personal`に入れる（`Brewfile`は共用想定）
+- `scripts/macos.sh`にmacOS設定を追加する場合はsudo不要な項目のみ
