@@ -2,6 +2,7 @@
   "cleanupPeriodDays": 9999,
   "permissions": {
     "allow": [
+	  "Bash(~/.claude/scripts/project-id.sh)",
       "Read(~/.claude/context/**)",
       "Write(~/.claude/context/**)",
       "Edit(~/.claude/context/**)",
