@@ -11,7 +11,7 @@
 
 ```bash
 # 1. Clone
-git clone https://github.com/KorRyu3/dotfiles.git ~/dotfiles
+git clone https://github.com/korryu3/dotfiles.git ~/dotfiles
 
 # 2. Install (Homebrew導入 → パッケージ → シンボリックリンク → セットアップ → macOS設定)
 cd ~/dotfiles && ./install.sh
