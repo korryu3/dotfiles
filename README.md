@@ -19,6 +19,9 @@ cd ~/dotfiles && ./install.sh
 # 個人用パッケージも含める場合
 cd ~/dotfiles && ./install.sh --personal
 
+# 3Dパッケージ (colmap, rtabmap, cloudcompare) も含める場合
+cd ~/dotfiles && ./install.sh --3d
+
 # 3. Brewfileにないパッケージを削除 (任意)
 brew bundle cleanup --file=~/dotfiles/Brewfile
 brew bundle cleanup --file=~/dotfiles/Brewfile --force  # 実際に削除
