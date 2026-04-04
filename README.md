@@ -6,15 +6,10 @@
 # 1. Clone
 git clone https://github.com/KorRyu3/dotfiles.git ~/dotfiles
 
-# 2. Brew packages
-brew bundle --file=~/dotfiles/Brewfile
-# 個人用パッケージ (任意)
-brew bundle --file=~/dotfiles/Brewfile.personal
-
-# 3. Symlinks
+# 2. Install (Homebrew導入 → パッケージ → シンボリックリンク → セットアップ)
 cd ~/dotfiles && ./install.sh
 
-# 4. Brewfileにないパッケージを削除 (任意)
+# 3. Brewfileにないパッケージを削除 (任意)
 brew bundle cleanup --file=~/dotfiles/Brewfile
 brew bundle cleanup --file=~/dotfiles/Brewfile --force  # 実際に削除
 ```
