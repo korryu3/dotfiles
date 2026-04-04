@@ -26,9 +26,16 @@ Host github.com
   IdentityFile {YOUR_PRIVATE_KEY_PATH}
 ```
 
+## 手動設定が必要なアプリ
+
+Sandbox制約により`defaults write`で設定できないアプリ:
+
+- **Safari**: 設定 > 詳細 > スマート検索フィールド > 「Webサイトの完全なアドレスを表示」をON / 「Webデベロッパ用の機能を表示」をON
+- **TextEdit**: 設定 > 「標準テキスト」を選択（リッチテキストではなくプレーンテキストをデフォルトに）
+
 ## TODO
 
-- [ ] macOS system defaults (Dock, Finder, key repeat etc.)
+- [x] macOS system defaults (Dock, Finder, key repeat etc.)
 - [ ] Nix Home Manager migration
 - [ ] VSCode Settings Sync
 - [ ] Serena config (`~/.serena/serena_config.yml`) の管理（`projects` リストがPC固有で自動更新されるため要検討）
