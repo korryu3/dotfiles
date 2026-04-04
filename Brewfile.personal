@@ -4,6 +4,7 @@ cask "codex"
 cask "cyberduck"
 cask "logi-options+"
 cask "discord"
+cask "microsoft-teams"
 cask "gcenx/wine/wine-crossover"
 
 # --- Mac App Store ---
