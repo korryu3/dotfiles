@@ -23,6 +23,7 @@ alias gs="git status"
 alias ga="git add"
 alias gc="git commit"
 alias gp="git push"
+alias gpf="git push --force-with-lease"
 alias gacp=gacpfunc
 alias gf="git fetch"
 alias gpl="git pull"
