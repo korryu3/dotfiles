@@ -11,6 +11,7 @@
 [user]
 	name = korryu3
 	email = 146335193+korryu3@users.noreply.github.com
+	signingkey = ~/.ssh/id_ed25519.pub
 [fetch]
 	prune = true
 # commit時のeditorを指定
@@ -24,5 +25,7 @@
 	default = simple
 [sequence]
 	editor = code --wait
+[gpg]
+	format = ssh
 [commit]
-	gpgsign = false
+	gpgsign = true

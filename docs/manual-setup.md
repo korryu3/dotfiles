@@ -2,7 +2,27 @@
 
 `install.sh`で自動化できない設定をまとめたドキュメント。
 
-## SSH config
+## SSH
+
+### 鍵の生成
+
+`.gitconfig`がcommit署名に`~/.ssh/id_ed25519`を使う前提のため、鍵名は変えないこと。
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+# Enter file: そのままEnter（~/.ssh/id_ed25519）
+```
+
+### GitHubへの登録
+
+認証用とcommit署名用の両方を登録する。
+
+```bash
+gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)" --type authentication
+gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)-signing" --type signing
+```
+
+### SSH config
 
 ```
 Host github.com
@@ -11,7 +31,7 @@ Host github.com
   UseKeychain yes
   User git
   Port 22
-  IdentityFile {YOUR_PRIVATE_KEY_PATH}
+  IdentityFile ~/.ssh/id_ed25519
 ```
 
 ## 手動設定が必要なアプリ
