@@ -16,18 +16,16 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 
 ## Phase 1: コンテキスト収集
 
-1. `gh pr diff`でPRの差分を取得
-2. `gh pr view`でPR descriptionと関連issueを取得
-3. 変更ファイルの一覧と変更行数を把握
+1. `gh pr view`でPR descriptionと関連issueを取得
+2. 変更ファイルの一覧と変更行数を把握（`gh pr diff --stat`）
 
 ## Phase 2: スキップ判断
 
-変更内容に応じて不要なスキルをskipする。ドキュメントのみなら全skip、設定ファイルのみなら`/simplify`をskip、diffが極めて小さい（10行以下）ならスキル不要で直接レビューなど。判断に迷う場合はすべて実行する。
+変更内容に応じて不要なスキル/analyzerをskipする。ドキュメントのみなら全skip、設定ファイルのみなら`/simplify`をskip、diffが極めて小さい（10行以下）ならスキル不要で直接レビューなど。Phase 4.5のanalyzerも同様にスキップ判断する（例: テストファイルの変更がなければpr-test-analyzerをskip）。判断に迷う場合はすべて実行する。
 
 ## Phase 3: 気になる点の洗い出し
 
 [agents/nitpicker.md](agents/nitpicker.md)のプロンプトでサブエージェントを1体起動する。
-Phase 1で収集したdiff全文とPR descriptionをプロンプトに含めること。
 
 出力: `nitpicker.md`
 
@@ -43,11 +41,24 @@ PRがdraft状態でも、CIが未完了でも実行して構わない。
 
 各スキルの結果を記録: `code-review.md`, `simplify.md`, `security-review.md`（skipしたスキルは作成不要）
 
+## Phase 4.5: 専門観点によるレビュー実行（並列）
+
+pr-review-toolkitの各analyzerをサブエージェントとして**並列起動**する。
+
+1. `pr-review-toolkit:comment-analyzer` — コメント/ドキュメントの正確性・保守性
+2. `pr-review-toolkit:pr-test-analyzer` — テストカバレッジの品質・完全性
+3. `pr-review-toolkit:silent-failure-hunter` — サイレントフェイル・不適切なエラーハンドリング
+4. `pr-review-toolkit:type-design-analyzer` — 型設計・不変条件・カプセル化
+
+Phase 2のスキップ判断で不要と判定されたanalyzerは起動しない。
+
+各analyzerの結果を記録: `comment-analyzer.md`, `pr-test-analyzer.md`, `silent-failure-hunter.md`, `type-design-analyzer.md`（skipしたanalyzerは作成不要）
+
 ## Phase 5: 結果の統合
 
-Phase 3〜4の全結果を統合し、重複を排除した上で**1つのレポート**にまとめる。
+Phase 3〜4.5の全結果を統合し、重複を排除した上で**1つのレポート**にまとめる。
 
-- 各指摘に出所ラベル（`nitpicker` / `code-review` / `simplify` / `security-review`）を付与する
+- 各指摘に出所ラベル（`nitpicker` / `code-review` / `simplify` / `security-review` / `comment-analyzer` / `pr-test-analyzer` / `silent-failure-hunter` / `type-design-analyzer`）を付与する
 - 各指摘にファイルパスと行番号を必ず含める
 - 重複する指摘は1つにまとめ、関連する出所ラベルを併記する
 
