@@ -1,7 +1,7 @@
 ---
 name: reviewing-code
 description: PRのコードレビューを実施する。コード品質・セキュリティ・複雑性の観点で全指摘を洗い出し、出所ラベル付きでオーケストレーターに返す。トリアージはオーケストレーターが行う。PRレビュー、コードレビュー、pull requestのレビュー依頼時に使用する。
-allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(gh pr diff:*), Bash(gh pr view:*), Write, AskUserQuestion
+allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(gh pr diff:*), Bash(gh pr view:*), Bash(gh api:*), Write, AskUserQuestion
 ---
 
 # Code Review
@@ -46,9 +46,9 @@ PRがdraft状態でも、CIが未完了でも実行して構わない。
 ## Phase 5: 結果の統合
 
 Phase 3〜4の全結果を統合し、重複を排除した上で**1つのレポート**にまとめる。
-GitHubにレビューコメントを投稿してはならない。
 
 - 各指摘に出所ラベル（`nitpicker` / `code-review` / `simplify` / `security-review`）を付与する
+- 各指摘にファイルパスと行番号を必ず含める
 - 重複する指摘は1つにまとめ、関連する出所ラベルを併記する
 
 出力: `report.md`に書き込む。
@@ -65,13 +65,62 @@ GitHubにレビューコメントを投稿してはならない。
 - [`nitpicker`, `security-review`] `models/order.ts:88` — 既存クエリがソフトデリートを考慮していない
 ```
 
-## Phase 6: トリアージ
+## Phase 6: 検証
 
-Phase 5の全指摘を、PRの目的・変更の文脈を踏まえて分類する。
+Phase 5の各指摘に対してSonnetサブエージェントを**並列起動**し、偽陽性を除外する。
+
+各サブエージェントには指摘内容（出所ラベル、ファイルパス、行番号、指摘文）を渡す。
+
+各サブエージェントが行うこと:
+1. **検証**: 該当コードを実際に読み、指摘が正しいか確認する
+2. **理由の明確化**: なぜ問題なのかを具体的に記述する
+3. **判定**: 正当な指摘 / 偽陽性（理由付き）
+
+偽陽性と判定された指摘は除外する。生き残った指摘に検証済みの理由を付与して`report.md`を更新する。
+
+## Phase 7: トリアージ
+
+Phase 6で検証済みの指摘を、PRの目的・変更の文脈を踏まえて分類する。
 
 - 各指摘にアクションレベルを付与する:
   - **must-fix**: マージ前に対応必須（バグ、セキュリティ、データ損失）
   - **should-fix**: 今対応すべきだが、理由があれば見送れる（設計改善、一貫性）
   - **nit**: 対応任意（スタイル、好み、些細な改善）
 - must-fix → should-fix → nitの順に並べてユーザーに報告する
-- must-fixまたはshould-fixが1件以上あればRequest Changes、なければApproveを推奨する
+
+## Phase 8: PRへのインラインコメント投稿
+
+Phase 7のトリアージ結果に基づき、**must-fix**と**should-fix**の指摘をPRにインラインコメントとして投稿する。
+nitsは投稿せず、ローカルのreport.mdのみに残す。
+
+### 投稿方法
+
+`gh api repos/{owner}/{repo}/pulls/{number}/reviews`でインラインコメント付きレビューを投稿する。
+
+- must-fixが1件以上ある場合: `event=REQUEST_CHANGES`
+- must-fixがなくshould-fixのみの場合: `event=COMMENT`
+- must-fix/should-fixがいずれもない場合: 投稿しない
+
+### コメントのフォーマット
+
+各インラインコメント:
+```
+🔴 **[must-fix]** [`code-review`] JWTの有効期限がハードコードされている
+
+**理由**: セキュリティリスク。有効期限の変更にコード修正とデプロイが必要になる
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
+レビュー本文（body）:
+```
+Code Review: N件の指摘（must-fix: X件, should-fix: Y件）
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
+### 注意事項
+
+- `position`はdiffのハンク内の行位置を指定する（ファイルの絶対行番号ではない）
+- `commit_id`はPRのHEAD commitのフルSHAを指定する
+- 他人のPRへの投稿は`guard-pr-comment.sh` PreToolUse hookにより構造的にブロックされている

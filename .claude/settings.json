@@ -22,6 +22,28 @@
     ]
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(gh pr comment*)",
+            "command": "~/.claude/scripts/guard-pr-comment.sh"
+          },
+          {
+            "type": "command",
+            "if": "Bash(gh pr review*)",
+            "command": "~/.claude/scripts/guard-pr-comment.sh"
+          },
+          {
+            "type": "command",
+            "if": "Bash(gh api*pulls*)",
+            "command": "~/.claude/scripts/guard-pr-comment.sh"
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "matcher": "*",
@@ -42,10 +64,11 @@
     "frontend-design@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true
+    "code-review@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true
   },
   "language": "japanese",
   "effortLevel": "medium",
-  "autoUpdatesChannel": "stable",
+  "autoUpdatesChannel": "latest",
   "autoMemoryEnabled": false
 }
