@@ -29,17 +29,17 @@
           {
             "type": "command",
             "if": "Bash(gh pr comment*)",
-            "command": "~/.claude/scripts/guard-pr-comment.sh"
+            "command": "~/.claude/scripts/guard-pr-posting.sh"
           },
           {
             "type": "command",
             "if": "Bash(gh pr review*)",
-            "command": "~/.claude/scripts/guard-pr-comment.sh"
+            "command": "~/.claude/scripts/guard-pr-posting.sh"
           },
           {
             "type": "command",
             "if": "Bash(gh api*pulls*)",
-            "command": "~/.claude/scripts/guard-pr-comment.sh"
+            "command": "~/.claude/scripts/guard-pr-posting.sh"
           }
         ]
       }

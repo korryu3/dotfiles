@@ -67,7 +67,7 @@ Phase 3〜4の全結果を統合し、重複を排除した上で**1つのレポ
 
 ## Phase 6: 検証
 
-Phase 5の各指摘に対してSonnetサブエージェントを**並列起動**し、偽陽性を除外する。
+Phase 5の各指摘に対してSonnetサブエージェント（`model: "sonnet"`を指定）を**並列起動**し、偽陽性を除外する。
 
 各サブエージェントには指摘内容（出所ラベル、ファイルパス、行番号、指摘文）を渡す。
 
@@ -112,6 +112,14 @@ nitsは投稿せず、ローカルのreport.mdのみに残す。
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ```
 
+```
+🟡 **[should-fix]** [`nitpicker`] ページネーション未実装
+
+**理由**: データ量増加時にレスポンスが肥大化し、パフォーマンス劣化を招く
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
 レビュー本文（body）:
 ```
 Code Review: N件の指摘（must-fix: X件, should-fix: Y件）
@@ -121,6 +129,7 @@ Code Review: N件の指摘（must-fix: X件, should-fix: Y件）
 
 ### 注意事項
 
+- owner/repoは`gh repo view --json owner,name`で取得する
 - `position`はdiffのハンク内の行位置を指定する（ファイルの絶対行番号ではない）
 - `commit_id`はPRのHEAD commitのフルSHAを指定する
-- 他人のPRへの投稿は`guard-pr-comment.sh` PreToolUse hookにより構造的にブロックされている
+- 他人のPRへの投稿は`guard-pr-posting.sh` PreToolUse hookにより構造的にブロックされている
