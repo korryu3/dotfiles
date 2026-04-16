@@ -5,3 +5,5 @@
 - 出力が長くなるコマンドは `run-command` agent（promptにコマンドを渡す）で実行すること。
 - 日本語と英語の間にスペースを入れない（例: ✕「React を使用」→ ○「Reactを使用」）
 - ファイルの保存先を指定されていない場合、`~/.claude/context/<PROJECT_ID>/notes/`配下に保存する。PROJECT_IDは`~/.claude/scripts/project-id.sh`で取得する。
+- ユーザー側のパーミッション許可を使う場合があるため、subagentはバックグランドで動かさないこと
+- アーキテクチャやワークフローをPR descriptionなどに記載する際はmermaidで書くこと
