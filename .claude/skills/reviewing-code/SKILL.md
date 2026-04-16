@@ -1,6 +1,6 @@
 ---
 name: reviewing-code
-description: PRのコードレビューを実施する。コード品質・セキュリティ・複雑性の観点で分析し、指摘事項を優先順位付きでユーザーに報告する。PRレビュー、コードレビュー、pull requestのレビュー依頼時に使用する。
+description: PRのコードレビューを実施する。コード品質・セキュリティ・複雑性の観点で全指摘を洗い出し、出所ラベル付きでオーケストレーターに返す。トリアージはオーケストレーターが行う。PRレビュー、コードレビュー、pull requestのレビュー依頼時に使用する。
 allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(gh pr diff:*), Bash(gh pr view:*), Write, AskUserQuestion
 ---
 
@@ -12,6 +12,7 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 
 - PROJECT_ID: `~/.claude/scripts/project-id.sh`を実行して取得する
 - 出力先: `~/.claude/context/<PROJECT_ID>/reviews/<branch-name>/`
+  - 同名ディレクトリが既に存在する場合は`<branch-name>-1`、`<branch-name>-2`...とサフィックスを付ける
 
 ## Phase 1: コンテキスト収集
 
@@ -44,10 +45,33 @@ PRがdraft状態でも、CIが未完了でも実行して構わない。
 
 ## Phase 5: 結果の統合
 
-Phase 3〜4の全結果を統合し、重複を排除した上で**1つのレポート**としてユーザーに報告する。
+Phase 3〜4の全結果を統合し、重複を排除した上で**1つのレポート**にまとめる。
 GitHubにレビューコメントを投稿してはならない。
 
-- 各指摘にCritical/High/Medium/Lowの優先度を付与し、優先度の高い順に報告する
-- PR全体の判断をApprove/Request Changes/Commentのいずれかで示す
+- 各指摘に出所ラベル（`nitpicker` / `code-review` / `simplify` / `security-review`）を付与する
+- 重複する指摘は1つにまとめ、関連する出所ラベルを併記する
 
-出力: `report.md`に書き込み、かつチャットにもサマリーを表示する。
+出力: `report.md`に書き込む。
+
+### report.mdのフォーマット
+
+```markdown
+# Code Review: <branch-name>
+
+## 指摘一覧
+
+- [`nitpicker`] `auth/login.ts:42` — JWTの有効期限がハードコードされている
+- [`code-review`] `api/users.ts:15-20` — ページネーション未実装
+- [`nitpicker`, `security-review`] `models/order.ts:88` — 既存クエリがソフトデリートを考慮していない
+```
+
+## Phase 6: トリアージ
+
+Phase 5の全指摘を、PRの目的・変更の文脈を踏まえて分類する。
+
+- 各指摘にアクションレベルを付与する:
+  - **must-fix**: マージ前に対応必須（バグ、セキュリティ、データ損失）
+  - **should-fix**: 今対応すべきだが、理由があれば見送れる（設計改善、一貫性）
+  - **nit**: 対応任意（スタイル、好み、些細な改善）
+- must-fix → should-fix → nitの順に並べてユーザーに報告する
+- must-fixまたはshould-fixが1件以上あればRequest Changes、なければApproveを推奨する
