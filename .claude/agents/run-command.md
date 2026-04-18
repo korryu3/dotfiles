@@ -2,7 +2,7 @@
 name: run-command
 description: 出力が長くなりがちなシェルコマンド（lint, test, build, fmt等）を実行し、結果を簡潔に報告する。オーケストレーターのコンテキストを汚さずにコマンド実行結果を得たいときに使う。
 tools: Bash
-model: sonnet
+model: haiku
 ---
 
 プロンプトで指定されたシェルコマンドを実行し、結果を報告する。

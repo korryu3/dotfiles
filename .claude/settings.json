@@ -8,10 +8,6 @@
       "Write(~/.claude/context/**)",
       "Edit(~/.claude/context/**)",
       "MultiEdit(~/.claude/context/**)",
-      "Read(~/.claude/plans/**)",
-      "Write(~/.claude/plans/**)",
-      "Edit(~/.claude/plans/**)",
-      "MultiEdit(~/.claude/plans/**)",
       "Skill(creating-plan)",
       "Skill(resuming-session)",
       "Skill(saving-session)",
@@ -28,18 +24,18 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(gh pr comment*)",
-            "command": "~/.claude/scripts/guard-pr-posting.sh"
+            "command": "~/.claude/scripts/guard-pr-posting.sh",
+            "if": "Bash(gh pr comment*)"
           },
           {
             "type": "command",
-            "if": "Bash(gh pr review*)",
-            "command": "~/.claude/scripts/guard-pr-posting.sh"
+            "command": "~/.claude/scripts/guard-pr-posting.sh",
+            "if": "Bash(gh pr review*)"
           },
           {
             "type": "command",
-            "if": "Bash(gh api*pulls*)",
-            "command": "~/.claude/scripts/guard-pr-posting.sh"
+            "command": "~/.claude/scripts/guard-pr-posting.sh",
+            "if": "Bash(gh api*pulls*)"
           }
         ]
       }
@@ -65,7 +61,8 @@
     "superpowers@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
-    "pr-review-toolkit@claude-plugins-official": true
+    "pr-review-toolkit@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true
   },
   "language": "japanese",
   "effortLevel": "medium",
