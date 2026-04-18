@@ -9,7 +9,7 @@
 `.gitconfig`がcommit署名に`~/.ssh/id_ed25519`を使う前提のため、鍵名は変えないこと。
 
 ```bash
-ssh-keygen -t ed25519 -C "your_email@example.com"
+ssh-keygen -t ed25519
 # Enter file: そのままEnter（~/.ssh/id_ed25519）
 ```
 
