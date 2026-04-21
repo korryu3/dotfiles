@@ -24,6 +24,7 @@ brew "zsh-syntax-highlighting"
 
 # --- Development ---
 brew "act"
+brew "actionlint"
 brew "aqua"
 brew "gh"
 brew "git"
@@ -35,6 +36,7 @@ brew "make"
 brew "mise"
 brew "overmind"
 brew "sqlite"
+brew "zizmor"
 
 # --- Languages / Runtimes ---
 brew "gcc"
