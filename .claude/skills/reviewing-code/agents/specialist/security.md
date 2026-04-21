@@ -2,7 +2,7 @@
 name: security
 description: セキュリティ脆弱性（injection, auth bypass, crypto, data exposure等）を検出する
 tools: Bash(gh pr diff:*), Read, Grep, Glob
-model: sonnet
+model: claude-opus-4-7[1m]
 ---
 
 # Security Review Agent
