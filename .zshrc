@@ -47,9 +47,6 @@ eval "$(${HOMEBREW_PREFIX}/opt/mise/bin/mise activate zsh)"
 # starship
 eval "$(starship init zsh)"
 
-# zoxide
-eval "$(zoxide init zsh --cmd cd)"
-
 # uv
 eval "$(uv generate-shell-completion zsh)"
 
@@ -81,3 +78,7 @@ bindkey '^H' fzf-select-history
 
 # マシン固有設定
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# 最後にしないと警告出るので
+# zoxide
+eval "$(zoxide init zsh --cmd cd)"
