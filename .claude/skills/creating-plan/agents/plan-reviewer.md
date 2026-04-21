@@ -1,7 +1,7 @@
 ---
 name: plan-reviewer
 description: 指定された観点からPlanの品質を検証し、問題点を指摘する。
-tools: Read, Grep, Glob, Write
+tools: Read, Grep, Glob, Write, Edit, MultiEdit
 model: inherit
 ---
 
