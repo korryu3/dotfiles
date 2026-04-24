@@ -98,6 +98,7 @@
       "Bash(git branch *)"
     ]
   },
+  "model": "claude-opus-4-6[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -117,6 +118,25 @@
             "type": "command",
             "command": "~/.claude/scripts/guard-pr-posting.sh",
             "if": "Bash(gh api*pulls*)"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/guard-env.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/inject-gh-token.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/cleanup-gh-token.sh"
           }
         ]
       }
@@ -150,6 +170,5 @@
   "effortLevel": "xhigh",
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
-  "autoMemoryEnabled": false,
-  "skipAutoPermissionPrompt": true
+  "autoMemoryEnabled": false
 }
