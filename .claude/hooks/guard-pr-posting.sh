@@ -1,9 +1,10 @@
 #!/bin/bash
 #
-# PreToolUse hook: 他人のPRへのコメント投稿をブロックする
+# PreToolUse hook: 他人のPRへのコメント投稿時にユーザーに確認を求める
 # 対象: gh pr comment, gh pr review, gh api .../pulls/.../reviews
 # - 自分のPRならOK (exit 0)
-# - 他人のPRならブロック (exit 2 + stderr)
+# - 他人のPRならユーザーに確認 (permissionDecision: ask)
+# - 判定不能ならブロック (permissionDecision: deny)
 #
 
 # gh/jqコマンドが存在しなければスキップ
@@ -48,8 +49,14 @@ fi
 # 自分のGitHubユーザー名を取得
 MY_USER=$(gh api user --jq '.login' 2>/dev/null) || true
 if [[ -z "$MY_USER" ]]; then
-  echo "gh api userに失敗しました。${GH_CMD}をブロックします。" >&2
-  exit 2
+  jq -n --arg cmd "$GH_CMD" '{
+    hookSpecificOutput: {
+      hookEventName: "PreToolUse",
+      permissionDecision: "deny",
+      permissionDecisionReason: ("gh api userに失敗しました。" + $cmd + "をブロックします。")
+    }
+  }'
+  exit 0
 fi
 
 # PR authorを取得（gh api経由でまだ取得していない場合）
@@ -63,8 +70,14 @@ if [[ -z "$PR_AUTHOR" ]]; then
 fi
 
 if [[ -z "$PR_AUTHOR" ]]; then
-  echo "PR authorの取得に失敗しました。${GH_CMD}をブロックします。" >&2
-  exit 2
+  jq -n --arg cmd "$GH_CMD" '{
+    hookSpecificOutput: {
+      hookEventName: "PreToolUse",
+      permissionDecision: "deny",
+      permissionDecisionReason: ("PR authorの取得に失敗しました。" + $cmd + "をブロックします。")
+    }
+  }'
+  exit 0
 fi
 
 # 自分のPRならOK
@@ -72,6 +85,12 @@ if [[ "$PR_AUTHOR" == "$MY_USER" ]]; then
   exit 0
 fi
 
-# 他人のPRならブロック
-echo "他人のPR (author: $PR_AUTHOR, you: $MY_USER) への${GH_CMD}をブロックしました。" >&2
-exit 2
+# 他人のPRならユーザーに確認を求める
+jq -n --arg author "$PR_AUTHOR" --arg user "$MY_USER" --arg cmd "$GH_CMD" '{
+  hookSpecificOutput: {
+    hookEventName: "PreToolUse",
+    permissionDecision: "ask",
+    permissionDecisionReason: ("他のユーザー(@" + $author + ")のPRへの" + $cmd + "です (you: @" + $user + ")")
+  }
+}'
+exit 0
