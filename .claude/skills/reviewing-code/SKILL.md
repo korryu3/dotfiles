@@ -17,7 +17,7 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 ## Phase 1: コンテキスト収集
 
 1. `gh pr view`でPR descriptionと関連issueを取得
-2. `gh pr view --json author`と`gh api user`を比較し、PRの作成者が実行ユーザーかどうかを判定する（Phase 5の投稿可否に使用）
+2. `gh pr view --json author`と`gh api user`を比較し、PRの作成者が実行ユーザーかどうかを判定する（Phase 6の投稿可否に使用）
 3. 変更ファイルの一覧と変更行数を把握（`gh pr diff --stat`）
 4. CLAUDE.mdファイルのパス収集（ルート + 変更ディレクトリ配下）
 5. `.claude/rules/`配下のルールファイル一覧と、変更ファイルに該当するルールの特定
@@ -56,9 +56,22 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 - **type-design** (`specialist/type-design.md`) — 型設計・不変条件・カプセル化
 - **comment** (`specialist/comment.md`) — コメント/ドキュメントの正確性・保守性
 
+### 共通出力形式
+
+各レビュアー（固定枠・動的枠共通）は以下の形式で出力する:
+
+```
+- `file:line` — 指摘内容
+  理由: なぜこれが問題か（任意。不明な場合は「理由: 要調査」と記載可）
+```
+
+理由が書けないことを理由に指摘を省略しないこと。
+
 ### 動的枠レビュアー
 
 Phase 2でperspective-generatorが生成した各観点に対し、サブエージェントを1体ずつ起動する。観点が0個の場合はスキップ。
+
+各動的枠レビュアーのサブエージェントプロンプトに、上記の共通出力形式を指示として含める。
 
 各レビュアーの出力は `{レビュアー名}.md` として保存。
 
@@ -70,6 +83,7 @@ Phase 3の全結果を統合し、重複を排除する:
 - 各指摘に出所ラベルを付与
 - 各指摘にファイルパスと行番号を必ず含める
 - 重複指摘は1つにまとめ、関連する出所ラベルを併記
+- 複数エージェントが同じ箇所を指摘しWhyが異なる場合は、両方のWhyを併記する
 
 ### Step 2: SubAgentによる並列検証
 
@@ -79,6 +93,8 @@ Phase 3の全結果を統合し、重複を排除する:
 - 指摘されたファイル・行番号のコードを実際に読み込む
 - 問題が本当に存在するかをコードベースの文脈で確認する。diffのみで判断しないこと。
 - 以下のスコアルーブリックに従い、0〜100の信頼度スコアを返す
+
+検証エージェントにはWhyフィールドを含む指摘を渡す。Whyは検証エージェントが「何を確認すべきか」を理解するための文脈情報であり、検証精度の向上に寄与する。ただし、提案生成（How）は検証エージェントから分離する（確認バイアス防止）。
 
 **スコアルーブリック（エージェントに渡す）:**
 - **-1**: 本物の問題だが、PRで新たに導入されたものではなく既存の問題
@@ -107,6 +123,8 @@ Phase 3の全結果を統合し、重複を排除する:
 
 must-fix → should-fix → nitの順でユーザーに報告。
 
+nit指摘のWhyは1文に圧縮してreport.mdに記載する。「理由: 要調査」の場合はreport.mdにはそのまま記載し、PRコメントではWhyブロックを省略する。
+
 出力: `report.md`に書き込む。
 
 ### report.mdのフォーマット
@@ -116,21 +134,63 @@ must-fix → should-fix → nitの順でユーザーに報告。
 
 ## 指摘一覧
 
-- 🔴 **[must-fix | 100]** [`bug-scanner`] `auth/login.ts:42` — JWTの有効期限がハードコードされている
-- 🟡 **[should-fix | 75]** [`nitpicker`] `api/users.ts:15-20` — ページネーション未実装
-- 🟢 **[nit | 50]** [`nitpicker`, `security`] `models/order.ts:88` — 既存クエリがソフトデリートを考慮していない
+### 🔴 must-fix | `auth/login.ts:42`
+[`bug-scanner`] スコア: 100
+
+JWTの有効期限がハードコードされている
+
+**理由**: セキュリティリスク。有効期限の変更にコード修正とデプロイが必要になる
+
+**提案**:
+環境変数から読み込むように変更する
+```typescript
+const JWT_EXPIRY = process.env.JWT_EXPIRY ?? 3600;
+```
+
+### 🟡 should-fix | `api/users.ts:15-20`
+[`nitpicker`] スコア: 75
+
+ページネーション未実装
+
+**理由**: データ量増加時にレスポンスが肥大化し、パフォーマンス問題を引き起こす
+
+**提案**:
+limit/offsetパラメータを追加する
+```typescript
+const { limit = 20, offset = 0 } = req.query;
+```
+
+- 💬 **[nit]** [`nitpicker`] `models/order.ts:88` — 既存クエリがソフトデリートを考慮していない可能性がある（理由: deleted_atカラムの追加に伴い、既存クエリの条件にWHERE deleted_at IS NULLが必要）
 
 ## 既存の問題（対応検討）
 
 PRで新たに導入された問題ではないが、変更箇所の近辺で検出された既存の問題:
 
-- ⚪ [`bug-scanner`] `auth/login.ts:30` — エラーハンドリングが不足している
-- ⚪ [`code-quality`] `api/users.ts:8` — 未使用のimportが残っている
+- ⚪ [`bug-scanner`] `auth/login.ts:30` — エラーハンドリングが不足している（理由: 例外発生時にログなく握りつぶされる）
+- ⚪ [`code-quality`] `api/users.ts:8` — 未使用のimportが残っている（理由: バンドルサイズへの影響）
 ```
 
-## Phase 5: PRへのインラインコメント投稿
+## Phase 5: 提案生成
 
-Phase 1の判定結果に基づき、PRの作成者が実行ユーザーと異なる場合はPhase 5全体をスキップする。スキップ時はレポートに「他人のPRのため投稿をスキップしました」と記載する。
+Phase 4のトリアージでmust-fix/should-fixと判定された指摘に対して、提案生成エージェントを並列起動する。nitの指摘には起動しない。
+
+提案生成を独立フェーズにする理由: 検証（Phase 4 Step 2）と提案生成は認知的に異なるタスクである。検証エージェントに提案生成を兼務させると「提案を作ったので問題の存在を肯定したくなる」確認バイアスが生じるリスクがある。
+
+オーケストレーターがPhase 4のトリアージ結果をメモリ上で保持し、must-fix/should-fixの指摘を抽出して各提案生成エージェントのプロンプトに直接含めて渡す。渡す内容:
+- 指摘内容（What）
+- 理由（Why）
+- ファイルパス・行番号
+- トリアージレベル（must-fix / should-fix）
+
+各指摘に対してSubAgent(model: Sonnet)を1体ずつ一斉並列起動する。エージェントプロンプトは `agents/meta/proposal-generator.md` を参照。
+
+全エージェントの完了を待ってからPhase 6に進む。提案生成エージェントが失敗した場合はHowなしでPhase 6に進む（What + Whyのみで投稿）。
+
+生成された提案はreport.mdの該当指摘に追記する。
+
+## Phase 6: PRへのインラインコメント投稿
+
+Phase 1の判定結果に基づき、PRの作成者が実行ユーザーと異なる場合はPhase 6全体をスキップする。スキップ時はレポートに「他人のPRのため投稿をスキップしました」と記載する。
 
 Phase 4のトリアージ結果に基づき、**must-fix**, **should-fix**, **nits**の指摘をPRにインラインコメントとして投稿する。
 
@@ -142,20 +202,48 @@ REQUEST_CHANGESは自身のPRでは使えないため、`event=COMMENT`で投稿
 
 ### コメントのフォーマット
 
-各インラインコメント:
+must-fix / should-fixの各インラインコメント（出所ラベルなし）:
 ```
-🔴 **[must-fix]** [`bug-scanner`] JWTの有効期限がハードコードされている
+🔴 **[must-fix]** JWTの有効期限がハードコードされている
 
 **理由**: セキュリティリスク。有効期限の変更にコード修正とデプロイが必要になる
+
+**提案**:
+環境変数から読み込むように変更する
+```suggestion
+const JWT_EXPIRY = process.env.JWT_EXPIRY ?? 3600;
+```
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ```
 
+nitのインラインコメント（1文圧縮、出所ラベルなし）:
+```
+💬 **[nit]** `user_id` → `userId` にするとプロジェクトの命名規則と統一できる
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ```
 
-レビュー本文（body）:
+「理由: 要調査」の場合（Whyブロック省略）:
 ```
-Code Review: N件の指摘（must-fix: X件, should-fix: Y件）
+🔴 **[must-fix]** JWTの有効期限がハードコードされている
+
+**提案**:
+環境変数から読み込むように変更する
+```suggestion
+const JWT_EXPIRY = process.env.JWT_EXPIRY ?? 3600;
+```
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
+- 出所ラベル（`[bug-scanner]`等）はPRコメントには含めない
+- suggestionブロックはGitHubのsuggested changesとして表示され、ワンクリックで適用可能。ただしdiff内の行のみ置換可能なため、使える場合のみ使用する
+- 「理由: 要調査」のWhyブロックはPRコメントでは省略する
+
+レビュー本文（body）も更新:
+```
+Code Review: N件の指摘（must-fix: X件, should-fix: Y件, nit: Z件）
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ```
