@@ -106,26 +106,26 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/scripts/guard-pr-posting.sh",
+            "command": "~/.claude/hooks/guard-pr-posting.sh",
             "if": "Bash(gh pr comment*)"
           },
           {
             "type": "command",
-            "command": "~/.claude/scripts/guard-pr-posting.sh",
+            "command": "~/.claude/hooks/guard-pr-posting.sh",
             "if": "Bash(gh pr review*)"
           },
           {
             "type": "command",
-            "command": "~/.claude/scripts/guard-pr-posting.sh",
+            "command": "~/.claude/hooks/guard-pr-posting.sh",
             "if": "Bash(gh api*pulls*)"
           },
           {
             "type": "command",
-            "command": "~/.claude/scripts/guard-env.sh"
+            "command": "~/.claude/hooks/guard-env.sh"
           },
           {
             "type": "command",
-            "command": "~/.claude/scripts/inject-gh-token.sh"
+            "command": "~/.claude/hooks/inject-gh-token.sh"
           }
         ]
       }
@@ -136,7 +136,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/scripts/cleanup-gh-token.sh"
+            "command": "~/.claude/hooks/cleanup-gh-token.sh"
           }
         ]
       }
