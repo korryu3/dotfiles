@@ -23,7 +23,7 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 
 ## Phase 2: 分析 & ルーティング
 
-1. [agents/meta/perspective-generator.md](agents/meta/perspective-generator.md)のプロンプトでサブエージェントを1体起動し、動的レビュー観点を生成
+1. **perspective-generator** (`meta/perspective-generator.md`) のプロンプトでサブエージェントを1体起動し、動的レビュー観点を生成
 2. 変更内容に基づき固定枠レビュアーのスキップ判断:
    - ドキュメントのみ → 全固定枠skip、動的観点のみ実行
    - diffが極めて小さい（10行以下）→ bug-scanner + 該当する固定枠のみ
@@ -38,22 +38,22 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 
 ### 固定枠レビュアー（最大14体、Phase 2のスキップ判断で絞られる）
 
-| レビュアー | agentファイル | 観点 |
-|---|---|---|
-| nitpicker | [agents/meta/nitpicker.md](agents/meta/nitpicker.md) | 観点を絞らず気になった点をすべて列挙 |
-| bug-scanner | [agents/correctness/bug-scanner.md](agents/correctness/bug-scanner.md) | diff内の明らかなバグをシャロースキャン |
-| git-history | [agents/correctness/git-history.md](agents/correctness/git-history.md) | git blame/履歴から歴史的文脈でバグ・退行を発見 |
-| past-pr | [agents/correctness/past-pr.md](agents/correctness/past-pr.md) | 過去PRのコメントで今回も該当するものをチェック |
-| silent-failure | [agents/correctness/silent-failure.md](agents/correctness/silent-failure.md) | サイレントフェイル・不適切なエラーハンドリング |
-| claude-md | [agents/compliance/claude-md.md](agents/compliance/claude-md.md) | CLAUDE.mdの規約に準拠しているかチェック |
-| rules | [agents/compliance/rules.md](agents/compliance/rules.md) | .claude/rules/配下のルールに準拠しているかチェック |
-| security | [agents/specialist/security.md](agents/specialist/security.md) | セキュリティ脆弱性 |
-| reuse | [agents/quality/reuse.md](agents/quality/reuse.md) | 既存ユーティリティとの重複、再利用機会 |
-| code-quality | [agents/quality/code.md](agents/quality/code.md) | 冗長state、コピペ、leaky abstraction、不要コメント等 |
-| efficiency | [agents/quality/efficiency.md](agents/quality/efficiency.md) | 無駄な計算、並列化機会、ホットパス肥大等 |
-| test-coverage | [agents/specialist/test-coverage.md](agents/specialist/test-coverage.md) | テストカバレッジの品質・完全性 |
-| type-design | [agents/specialist/type-design.md](agents/specialist/type-design.md) | 型設計・不変条件・カプセル化 |
-| comment | [agents/specialist/comment.md](agents/specialist/comment.md) | コメント/ドキュメントの正確性・保守性 |
+各レビュアーのエージェントプロンプトは `agents/` 配下に配置。
+
+- **nitpicker** (`meta/nitpicker.md`) — 観点を絞らず気になった点をすべて列挙
+- **bug-scanner** (`correctness/bug-scanner.md`) — diff内の明らかなバグをシャロースキャン
+- **git-history** (`correctness/git-history.md`) — git blame/履歴から歴史的文脈でバグ・退行を発見
+- **past-pr** (`correctness/past-pr.md`) — 過去PRのコメントで今回も該当するものをチェック
+- **silent-failure** (`correctness/silent-failure.md`) — サイレントフェイル・不適切なエラーハンドリング
+- **claude-md** (`compliance/claude-md.md`) — CLAUDE.mdの規約に準拠しているかチェック
+- **rules** (`compliance/rules.md`) — .claude/rules/配下のルールに準拠しているかチェック
+- **security** (`specialist/security.md`) — セキュリティ脆弱性
+- **reuse** (`quality/reuse.md`) — 既存ユーティリティとの重複、再利用機会
+- **code-quality** (`quality/code.md`) — 冗長state、コピペ、leaky abstraction、不要コメント等
+- **efficiency** (`quality/efficiency.md`) — 無駄な計算、並列化機会、ホットパス肥大等
+- **test-coverage** (`specialist/test-coverage.md`) — テストカバレッジの品質・完全性
+- **type-design** (`specialist/type-design.md`) — 型設計・不変条件・カプセル化
+- **comment** (`specialist/comment.md`) — コメント/ドキュメントの正確性・保守性
 
 ### 動的枠レビュアー
 
