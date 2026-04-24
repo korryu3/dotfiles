@@ -17,9 +17,10 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 ## Phase 1: コンテキスト収集
 
 1. `gh pr view`でPR descriptionと関連issueを取得
-2. 変更ファイルの一覧と変更行数を把握（`gh pr diff --stat`）
-3. CLAUDE.mdファイルのパス収集（ルート + 変更ディレクトリ配下）
-4. `.claude/rules/`配下のルールファイル一覧と、変更ファイルに該当するルールの特定
+2. `gh pr view --json author`と`gh api user`を比較し、PRの作成者が実行ユーザーかどうかを判定する（Phase 5の投稿可否に使用）
+3. 変更ファイルの一覧と変更行数を把握（`gh pr diff --stat`）
+4. CLAUDE.mdファイルのパス収集（ルート + 変更ディレクトリ配下）
+5. `.claude/rules/`配下のルールファイル一覧と、変更ファイルに該当するルールの特定
 
 ## Phase 2: 分析 & ルーティング
 
@@ -129,6 +130,8 @@ PRで新たに導入された問題ではないが、変更箇所の近辺で検
 
 ## Phase 5: PRへのインラインコメント投稿
 
+Phase 1の判定結果に基づき、PRの作成者が実行ユーザーと異なる場合はPhase 5全体をスキップする。スキップ時はレポートに「他人のPRのため投稿をスキップしました」と記載する。
+
 Phase 4のトリアージ結果に基づき、**must-fix**, **should-fix**, **nits**の指摘をPRにインラインコメントとして投稿する。
 
 ### 投稿方法
@@ -160,4 +163,4 @@ Code Review: N件の指摘（must-fix: X件, should-fix: Y件）
 ### 注意事項
 
 - `position`はdiffのハンク内の行位置（ファイルの絶対行番号ではない）
-- 他人のPRへの投稿は`guard-pr-posting.sh` PreToolUse hookによりブロックされている
+- 他人のPRへの投稿はスキップ判定で除外される
