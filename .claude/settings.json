@@ -96,7 +96,8 @@
       "Bash(git rebase *)",
       "Bash(git reset *)",
       "Bash(git branch *)"
-    ]
+    ],
+    "defaultMode": "auto"
   },
   "model": "claude-opus-4-6[1m]",
   "hooks": {
@@ -170,5 +171,6 @@
   "effortLevel": "xhigh",
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
-  "autoMemoryEnabled": false
+  "autoMemoryEnabled": false,
+  "skipAutoPermissionPrompt": true
 }
