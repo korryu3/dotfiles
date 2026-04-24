@@ -28,6 +28,7 @@ FILES=(
   .claude/rules
   .claude/agents
   .claude/skills
+  .claude/hooks
   .claude/scripts
   .config/bat/config
   .config/nvim
