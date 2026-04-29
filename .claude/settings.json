@@ -7,7 +7,6 @@
       "Read(~/.claude/context/**)",
       "Write(~/.claude/context/**)",
       "Edit(~/.claude/context/**)",
-      "MultiEdit(~/.claude/context/**)",
       "Skill(creating-plan)",
       "Skill(resuming-session)",
       "Skill(saving-session)",
@@ -41,6 +40,8 @@
       "Write(//**/.git/**)",
       "Write(//**/.claude/settings.json)",
       "Write(//**/.claude/settings.local.json)",
+      "Write(~/repos/**/.git/**)",
+      "Write(~/ghq/**/.git/**)",
       "Edit(//**/*.env*)",
       "Edit(//**/*id_rsa*)",
       "Edit(//**/*id_ed25519*)",
@@ -50,21 +51,10 @@
       "Edit(//**/*.p12*)",
       "Edit(//**/*.pfx*)",
       "Edit(//**/*.jks*)",
-      "Edit(//**/.git/**)",
+      "Edit(~/repos/**/.git/**)",
+      "Edit(~/ghq/**/.git/**)",
       "Edit(//**/.claude/settings.json)",
       "Edit(//**/.claude/settings.local.json)",
-      "MultiEdit(//**/*.env*)",
-      "MultiEdit(//**/*id_rsa*)",
-      "MultiEdit(//**/*id_ed25519*)",
-      "MultiEdit(//**/*.key*)",
-      "MultiEdit(//**/*.pem*)",
-      "MultiEdit(//**/*.crt*)",
-      "MultiEdit(//**/*.p12*)",
-      "MultiEdit(//**/*.pfx*)",
-      "MultiEdit(//**/*.jks*)",
-      "MultiEdit(//**/.git/**)",
-      "MultiEdit(//**/.claude/settings.json)",
-      "MultiEdit(//**/.claude/settings.local.json)",
       "Bash(find * -delete*)",
       "Bash(find * -exec rm*)",
       "Bash(git branch -D *)",
@@ -149,6 +139,16 @@
           {
             "type": "command",
             "command": "osascript -e 'display notification \"Claude Codeが許可を求めています\" with title \"Claude Code\" subtitle \"確認待ち\" sound name \"Glass\"'"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '{\"hookSpecificOutput\":{\"hookEventName\":\"SubagentStart\",\"additionalContext\":\"想定外の問題やエラーが発生した場合、自己判断で回避せずオーケストレーターに状況を報告して指示を仰ぐこと。\"}}'"
           }
         ]
       }
