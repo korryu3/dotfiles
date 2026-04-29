@@ -50,6 +50,9 @@ eval "$(starship init zsh)"
 # uv
 eval "$(uv generate-shell-completion zsh)"
 
+# zoxide
+eval "$(zoxide init zsh)"
+
 # bashcompinit + terraform
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C ${HOMEBREW_PREFIX}/bin/terraform terraform
@@ -79,6 +82,3 @@ bindkey '^H' fzf-select-history
 # マシン固有設定
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
-# 最後にしないと警告出るので
-# zoxide
-eval "$(zoxide init zsh --cmd cd)"
