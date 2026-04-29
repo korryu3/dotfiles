@@ -10,21 +10,22 @@
 ## Setup
 
 ```bash
-# 1. Clone
-git clone https://github.com/korryu3/dotfiles.git ~/dotfiles
+# 1. Clone (ghqのディレクトリ構造に合わせる)
+git clone https://github.com/korryu3/dotfiles.git ~/ghq/github.com/korryu3/dotfiles
+cd ~/ghq/github.com/korryu3/dotfiles
 
 # 2. Install (Homebrew導入 → パッケージ → シンボリックリンク → セットアップ → macOS設定)
-cd ~/dotfiles && ./install.sh
+./install.sh
 
 # 個人用パッケージも含める場合
-cd ~/dotfiles && ./install.sh --personal
+./install.sh --personal
 
 # 3Dパッケージ (colmap, rtabmap, cloudcompare) も含める場合
-cd ~/dotfiles && ./install.sh --3d
+./install.sh --3d
 
 # 3. Brewfileにないパッケージを削除 (任意)
-brew bundle cleanup --file=~/dotfiles/Brewfile
-brew bundle cleanup --file=~/dotfiles/Brewfile --force  # 実際に削除
+brew bundle cleanup --file=~/ghq/github.com/korryu3/dotfiles/Brewfile
+brew bundle cleanup --file=~/ghq/github.com/korryu3/dotfiles/Brewfile --force  # 実際に削除
 ```
 
 ## Manual Setup
