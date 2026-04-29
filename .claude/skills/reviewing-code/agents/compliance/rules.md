@@ -1,7 +1,7 @@
 ---
 name: rules
 description: .claude/rules/配下のルールに準拠しているかチェックする
-tools: Bash(gh pr diff:*), Read, Grep, Glob
+tools: Bash(gh pr diff:*), Read, Grep, Glob, Write
 model: sonnet
 ---
 

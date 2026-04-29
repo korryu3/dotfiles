@@ -1,7 +1,7 @@
 ---
 name: bug-scanner
 description: diff内の明らかなバグをシャロースキャンし、大きなバグに集中する
-tools: Bash(gh pr diff:*), Read
+tools: Bash(gh pr diff:*), Read, Write
 model: sonnet
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: git-history
 description: git blame/履歴を読み、歴史的文脈からバグ・退行を発見する
-tools: Bash(git blame:*), Bash(git log:*), Bash(gh pr diff:*), Read, Grep, Glob
+tools: Bash(git blame:*), Bash(git log:*), Bash(gh pr diff:*), Read, Grep, Glob, Write
 model: sonnet
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: silent-failure
 description: サイレントフェイル・不適切なエラーハンドリングを検出する
-tools: Bash(gh pr diff:*), Read, Grep, Glob
+tools: Bash(gh pr diff:*), Read, Grep, Glob, Write
 model: sonnet
 ---
 

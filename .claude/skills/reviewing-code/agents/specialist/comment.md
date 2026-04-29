@@ -1,7 +1,7 @@
 ---
 name: comment
 description: コメント/ドキュメントの正確性・保守性を分析する
-tools: Bash(gh pr diff:*), Read, Grep, Glob
+tools: Bash(gh pr diff:*), Read, Grep, Glob, Write
 model: sonnet
 ---
 

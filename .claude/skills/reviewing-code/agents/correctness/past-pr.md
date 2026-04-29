@@ -1,7 +1,7 @@
 ---
 name: past-pr
 description: 過去のPRのコメントで今回のPRにも該当するものがないかチェックする
-tools: Bash(gh pr list:*), Bash(gh api:*), Bash(gh pr diff:*), Read
+tools: Bash(gh pr list:*), Bash(gh api:*), Bash(gh pr diff:*), Read, Write
 model: sonnet
 ---
 

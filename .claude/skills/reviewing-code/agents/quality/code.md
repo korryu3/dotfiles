@@ -1,7 +1,7 @@
 ---
 name: code-quality
 description: 冗長なstate、コピペ、leaky abstraction、不要コメント等のコード品質問題を検出する
-tools: Bash(gh pr diff:*), Read, Grep, Glob
+tools: Bash(gh pr diff:*), Read, Grep, Glob, Write
 model: sonnet
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: efficiency
 description: 無駄な計算、並列化機会、ホットパス肥大、メモリリーク等の効率性問題を検出する
-tools: Bash(gh pr diff:*), Read, Grep, Glob
+tools: Bash(gh pr diff:*), Read, Grep, Glob, Write
 model: sonnet
 ---
 

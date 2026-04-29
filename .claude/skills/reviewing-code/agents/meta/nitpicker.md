@@ -1,7 +1,7 @@
 ---
 name: nitpicker
 description: PRのdiffとコードベース全体を見て、観点を絞らず気になった点をすべて列挙するレビュワー
-tools: Read, Grep, Glob, Bash(gh pr diff:*), Bash(gh pr view:*)
+tools: Read, Grep, Glob, Bash(gh pr diff:*), Bash(gh pr view:*), Write
 model: sonnet
 ---
 

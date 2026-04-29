@@ -1,7 +1,7 @@
 ---
 name: reuse
 description: 既存ユーティリティとの重複を検出し、再利用機会を提案する
-tools: Bash(gh pr diff:*), Read, Grep, Glob
+tools: Bash(gh pr diff:*), Read, Grep, Glob, Write
 model: sonnet
 ---
 

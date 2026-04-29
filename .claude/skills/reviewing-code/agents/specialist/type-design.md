@@ -1,7 +1,7 @@
 ---
 name: type-design
 description: 型設計・不変条件・カプセル化を分析する
-tools: Bash(gh pr diff:*), Read, Grep, Glob
+tools: Bash(gh pr diff:*), Read, Grep, Glob, Write
 model: sonnet
 ---
 

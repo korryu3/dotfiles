@@ -1,7 +1,7 @@
 ---
 name: claude-md
 description: CLAUDE.mdの規約に準拠しているかチェックする
-tools: Bash(gh pr diff:*), Read, Grep, Glob
+tools: Bash(gh pr diff:*), Read, Grep, Glob, Write
 model: sonnet
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: security
 description: セキュリティ脆弱性（injection, auth bypass, crypto, data exposure等）を検出する
-tools: Bash(gh pr diff:*), Read, Grep, Glob
+tools: Bash(gh pr diff:*), Read, Grep, Glob, Write
 model: claude-opus-4-7[1m]
 ---
 

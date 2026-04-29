@@ -1,7 +1,7 @@
 ---
 name: proposal-generator
 description: トリアージ済みの指摘（must-fix / should-fix）に対して具体的な修正提案を生成する
-tools: Read, Bash
+tools: Read, Bash, Write
 model: sonnet
 ---
 
