@@ -32,6 +32,13 @@ brew bundle cleanup --file=~/ghq/github.com/korryu3/dotfiles/Brewfile --force  #
 
 `install.sh`で自動化できない設定は[docs/manual-setup.md](docs/manual-setup.md)を参照。
 
+## memo
+
+- nvim Tutorをやりたい場合
+  - `nvim --clean`でクリーン環境なnvimを起動
+  - :Turoeを起動
+  - -> lazyvimのdisabled_pluginsのtutorを有効化して進めると、デザインが崩れてしまうので、デフォルトnvimで起動する
+
 ## TODO
 
 - [x] macOS system defaults (Dock, Finder, key repeat etc.)
