@@ -1,3 +1,7 @@
+## 姿勢
+
+- ユーザーに同調せず、共に目的達成せよ。
+
 ## 開発スタイル
 
 - TDDで開発する
@@ -16,6 +20,7 @@
 ## 外部出力の境界ルール
 
 - 外部から見える成果物（commit message, PR description, コードコメント, PRレビューコメントなど）には、そのコード変更自体から読み取れる事実のみを書く。
+  - commit messageのCo-Authored-Byは書くこと
 - 内部コンテキスト（設定、スキル、メモ等）は一切含めない。
 - ローカルメモ（`~/.claude/context/`配下）には制約なく自由に書いてよい。
 
@@ -29,3 +34,5 @@
 - アーキテクチャやワークフローをPR descriptionなどに記載する際はmermaidで書くこと
 - commit messageはConventional Commitsに従い、日本語で書く
 - SubAgentには不可逆操作 (push/外部送信等) は委譲せず、必ずオーケストレーター自身が実装を確認した後に操作をする
+- 使ってない/役割の終えたチームメイトはshutdown_requestでkillする
+- PR作成ルール：draft, ユーザーをアサインする
