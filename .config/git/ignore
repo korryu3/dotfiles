@@ -4,3 +4,6 @@
 
 **/.claude/settings.local.json
 .serena/
+
+docs/superpowers/
+.superpowers/
