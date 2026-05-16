@@ -1,4 +1,5 @@
 tap "hashicorp/tap"
+tap "k1LoW/tap"
 
 # --- CLI tools ---
 brew "bat"
@@ -37,6 +38,7 @@ brew "cmake"
 brew "just"
 brew "make"
 brew "mise"
+brew "k1LoW/tap/mo"
 brew "overmind"
 brew "sqlite"
 brew "zizmor"
