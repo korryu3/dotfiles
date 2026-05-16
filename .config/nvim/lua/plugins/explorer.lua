@@ -12,6 +12,11 @@ return {
           files = {
             hidden = true,
           },
+          grep = {
+            hidden = true,
+            ignored = true,
+            exclude = { ".git" },
+          },
         },
       },
     },

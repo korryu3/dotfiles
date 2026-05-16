@@ -85,7 +85,6 @@
     "ask": [],
     "defaultMode": "auto"
   },
-  "model": "claude-opus-4-6[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -164,7 +163,6 @@
   },
   "outputStyle": "Explanatory",
   "language": "japanese",
-  "effortLevel": "xhigh",
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
   "autoMemoryEnabled": false,

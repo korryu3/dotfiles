@@ -2,3 +2,5 @@
 
 # マシン固有設定
 .zshrc.local
+.claude/worktrees
+
