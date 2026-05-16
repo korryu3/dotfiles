@@ -1,5 +1,8 @@
 {
   "cleanupPeriodDays": 9999,
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "permissions": {
     "allow": [
       "Bash(mkdir -p ~/.claude/context/**)",
@@ -79,14 +82,7 @@
       "Bash(brew install *)",
       "Bash(git config *)"
     ],
-    "ask": [
-      "Bash(git add *)",
-      "Bash(git commit *)",
-      "Bash(git push *)",
-      "Bash(git rebase *)",
-      "Bash(git reset *)",
-      "Bash(git branch *)"
-    ],
+    "ask": [],
     "defaultMode": "auto"
   },
   "model": "claude-opus-4-6[1m]",
