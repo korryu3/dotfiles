@@ -27,10 +27,9 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 ## Phase 1: コンテキスト収集
 
 1. `gh pr view`でPR descriptionと関連issueを取得
-2. `gh pr view --json author`と`gh api user`を比較し、PRの作成者が実行ユーザーかどうかを判定する（Phase 5の投稿可否に使用）
-3. 変更ファイルの一覧と変更行数を把握（`gh pr diff --stat`）
-4. CLAUDE.mdファイルのパス収集（ルート + 変更ディレクトリ配下）
-5. `.claude/rules/`配下のルールファイル一覧と、変更ファイルに該当するルールの特定
+2. 変更ファイルの一覧と変更行数を把握（`gh pr diff --stat`）
+3. CLAUDE.mdファイルのパス収集（ルート + 変更ディレクトリ配下）
+4. `.claude/rules/`配下のルールファイル一覧と、変更ファイルに該当するルールの特定
 
 ## Phase 2: 分析 & ルーティング
 
@@ -172,7 +171,7 @@ report.mdの冒頭（指摘一覧の前）に記載する。
 
 ### report.mdのフォーマット
 
-```markdown
+````markdown
 # Code Review: <branch-name>
 
 ## サマリー
@@ -215,15 +214,15 @@ PRで新たに導入された問題ではないが、変更箇所の近辺で検
 
 - ⚪ [`bug-scanner`] `auth/login.ts:30` — エラーハンドリングが不足している（理由: 例外発生時にログなく握りつぶされる）
 - ⚪ [`code-quality`] `api/users.ts:8` — 未使用のimportが残っている（理由: バンドルサイズへの影響）
-```
+````
 
 出力: `report.md`に書き込む。
 
 ## Phase 5: PRへのインラインコメント投稿
 
-Phase 1の判定結果に基づき、PRの作成者が実行ユーザーと異なる場合はPhase 5全体をスキップする。スキップ時はレポートに「他人のPRのため投稿をスキップしました」と記載する。
+明示的な指示がない場合はPhase 5全体(PR投稿)をスキップする。スキップ時はレポートに「他人のPRのため投稿をスキップしました」と記載する。
 
-**PRに投稿しない場合（他人のPR、または指摘なし）は、report.mdの指摘一覧をユーザーにそのまま提示する。**
+**PRに投稿しない場合は、report.mdの指摘一覧をユーザーにそのまま提示する。**
 
 Phase 4のトリアージ結果に基づき、**must-fix**, **should-fix**, **nits**の指摘をPRにインラインコメントとして投稿する。
 
@@ -236,7 +235,7 @@ REQUEST_CHANGESは自身のPRでは使えないため、`event=COMMENT`で投稿
 ### コメントのフォーマット
 
 must-fix / should-fixの各インラインコメント（出所ラベルなし）:
-```
+````
 🔴 **[must-fix]** JWTの有効期限がハードコードされている
 
 **理由**: セキュリティリスク。有効期限の変更にコード修正とデプロイが必要になる
@@ -248,17 +247,17 @@ const JWT_EXPIRY = process.env.JWT_EXPIRY ?? 3600;
 ```
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
-```
+````
 
 nitのインラインコメント（1文圧縮、出所ラベルなし）:
-```
+````
 💬 **[nit]** `user_id` → `userId` にするとプロジェクトの命名規則と統一できる
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
-```
+````
 
 「理由: 要調査」の場合（Whyブロック省略）:
-```
+````
 🔴 **[must-fix]** JWTの有効期限がハードコードされている
 
 **提案**:
@@ -268,20 +267,20 @@ const JWT_EXPIRY = process.env.JWT_EXPIRY ?? 3600;
 ```
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
-```
+````
 
 - 出所ラベル（`[bug-scanner]`等）はPRコメントには含めない
 - suggestionブロックはGitHubのsuggested changesとして表示され、ワンクリックで適用可能。ただしdiff内の行のみ置換可能なため、使える場合のみ使用する
 - 「理由: 要調査」のWhyブロックはPRコメントでは省略する
 
 レビュー本文（body）も更新:
-```
+````
 Code Review: N件の指摘（must-fix: X件, should-fix: Y件, nit: Z件）
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
-```
+````
 
 ### 注意事項
 
 - `position`はdiffのハンク内の行位置（ファイルの絶対行番号ではない）
-- 他人のPRへの投稿はスキップ判定で除外される
+- 明示的な指示がない場合、PR投稿はskipする
