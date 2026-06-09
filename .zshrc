@@ -1,4 +1,8 @@
 : ${HOMEBREW_PREFIX:=$(brew --prefix)}
+# beybindをemacs風(default)にする
+# EDITORがvimだと、勝手にviモードになる
+bindkey -e
+
 source ${HOME}/.zsh/plugins.zsh
 typeset -U path fpath
 
