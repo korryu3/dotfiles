@@ -41,6 +41,8 @@ brew "k1LoW/tap/mo"
 brew "overmind"
 brew "sqlite"
 brew "zizmor"
+cask "zed"
+
 
 # --- Languages / Runtimes ---
 brew "gcc"
