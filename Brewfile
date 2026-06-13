@@ -41,6 +41,7 @@ brew "k1LoW/tap/mo"
 brew "overmind"
 brew "sqlite"
 brew "zizmor"
+cask "claude"
 cask "zed"
 
 
