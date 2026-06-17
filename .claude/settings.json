@@ -85,6 +85,7 @@
     "ask": [],
     "defaultMode": "auto"
   },
+  "model": "claude-opus-4-6[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -159,16 +160,17 @@
     "context7@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
     "pr-review-toolkit@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true
+    "skill-creator@claude-plugins-official": true,
+    "notion@claude-plugins-official": true
   },
   "outputStyle": "Explanatory",
   "language": "japanese",
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
-  "autoMemoryEnabled": false,
+  "autoMemoryEnabled": true,
+  "skipWorkflowUsageWarning": true,
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "model": "claude-opus-4-7[1m]"
+  "skipAutoPermissionPrompt": true
 }
