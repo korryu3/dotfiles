@@ -3,7 +3,22 @@
 .envrc
 
 **/.claude/settings.local.json
-.serena/
+**/.serena/
 
-docs/superpowers/
-.superpowers/
+**/docs/superpowers/
+**/.superpowers/
+
+# skill-creatorのeval用
+.claude/skills/*-workspace
+
+# claude-code-runtime
+**/.claude/scheduled_tasks.lock
+**/.claude/scheduled_tasks.json
+**/.claude/routines/.state/
+**/.claude/worktrees/
+**/.claude/checkpoints/
+**/.claude/mailbox/
+**/.claude/agent-registry.json
+**/.claude/agent-memory-local
+**/.claude/first-run
+**/.claude/assistant-daemon-state.json
