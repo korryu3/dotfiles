@@ -7,6 +7,7 @@
 
 - TDDで開発する
   - 開発時は`/tdd`スキルを使うこと。
+- バグ調査・デバッグ時は`/diagnose`スキルを使うこと（`superpowers:systematic-debugging`は使わない）
 - 不明瞭な指示は質問して明確にする
 
 ## コード設計

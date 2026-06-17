@@ -19,6 +19,7 @@
       "Skill(reviewing-code)"
     ],
     "deny": [
+      "Skill(superpowers:systematic-debugging)",
       "Read(//**/secrets/**)",
       "Read(//**/.aws/**)",
       "Read(//**/.ssh/**)",
