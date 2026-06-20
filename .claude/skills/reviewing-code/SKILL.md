@@ -146,6 +146,8 @@ Step 3でスコア25（検証できなかった）と判定された指摘に対
 - **should-fix**: 今対応すべきだが理由があれば見送れる（設計改善、一貫性、退行リスク）
 - **nit**: 対応任意（スタイル、命名、些細な改善）
 
+`~/.claude/context/<PROJECT_ID>/`配下のADR・plan、およびPR descriptionを参照し、意図的な設計判断に該当する指摘は棄却する。棄却した指摘はレポートの「設計判断による棄却」セクションに記載する。
+
 must-fix → should-fix → nitの順でユーザーに報告。
 
 ### Step 6: 提案生成
@@ -207,6 +209,12 @@ const { limit = 20, offset = 0 } = req.query;
 ```
 
 - 💬 **[nit]** [`nitpicker`] `models/order.ts:88` — 既存クエリがソフトデリートを考慮していない可能性がある（理由: deleted_atカラムの追加に伴い、既存クエリの条件にWHERE deleted_at IS NULLが必要）
+
+## 設計判断による棄却
+
+ADR・plan・PR descriptionに記載された設計判断に基づき、以下の指摘を棄却した:
+
+- ⚪ [`bug-scanner`] `auth/login.ts:42` — JWTの有効期限がハードコードされている（棄却理由: ADR-0001により環境変数化は意図的に見送り）
 
 ## 既存の問題（対応検討）
 
