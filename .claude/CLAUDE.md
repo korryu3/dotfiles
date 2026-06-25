@@ -23,6 +23,7 @@
 
 - 外部から見える成果物（commit message, PR description, コードコメント, PRレビューコメントなど）には、そのコード変更自体から読み取れる事実のみを書く。
   - commit messageのCo-Authored-Byは書くこと
+  - commit messageにClaude-Sessionは含めない
 - 内部コンテキスト（設定、スキル、メモ、内部番号等）は一切含めない。
 - ローカルメモ（`~/.claude/context/`配下）には制約なく自由に書いてよい。
 
