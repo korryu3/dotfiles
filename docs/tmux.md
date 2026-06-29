@@ -6,7 +6,8 @@ prefix: `C-a`
 
 | 操作 | キー |
 |---|---|
-| 新規セッション | `tmux new -s <name>` |
+| 新規セッション（外から） | `tmux new -s <name>` |
+| 新規セッション（中から） | `prefix :new-session -s <name>` |
 | デタッチ | `prefix d` |
 | セッション一覧 | `tmux ls` |
 | アタッチ | `tmux a -t <name>` |
