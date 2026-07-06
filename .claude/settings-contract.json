@@ -1,0 +1,25 @@
+{
+  "shared": [
+    "cleanupPeriodDays",
+    "permissions",
+    "model",
+    "hooks",
+    "statusLine",
+    "outputStyle",
+    "language",
+    "autoUpdatesChannel",
+    "tui",
+    "autoMemoryEnabled",
+    "skipWorkflowUsageWarning",
+    "remoteControlAtStartup",
+    "inputNeededNotifEnabled",
+    "agentPushNotifEnabled",
+    "skipAutoPermissionPrompt"
+  ],
+  "merged": {
+    "env": [],
+    "enabledPlugins": ["*@claude-plugins-official"],
+    "extraKnownMarketplaces": []
+  },
+  "local": []
+}

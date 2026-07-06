@@ -86,7 +86,7 @@
     "ask": [],
     "defaultMode": "auto"
   },
-  "model": "claude-opus-4-6[1m]",
+  "model": "claude-fable-5[1m]",
   "hooks": {
     "SessionStart": [
       {
@@ -94,6 +94,10 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/check-memory-hygiene.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/claude_settings_sync.py check --hook"
           }
         ]
       }

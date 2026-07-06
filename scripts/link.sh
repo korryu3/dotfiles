@@ -23,7 +23,6 @@ FILES=(
   .tmux.conf
   .colima/default/colima.yaml
   .codex/config.toml
-  .claude/settings.json
   .claude/CLAUDE.md
   .claude/statusline.py
   .claude/rules
@@ -85,6 +84,16 @@ echo ""
 for file in "${FILES[@]}"; do
   link_file "$file"
 done
+
+echo ""
+echo "=== Claude settings 同期 ==="
+echo ""
+
+if command -v python3 >/dev/null 2>&1; then
+  python3 "$DOTFILES_DIR/.claude/scripts/claude_settings_sync.py" apply
+else
+  echo "  スキップ: python3 が見つかりません"
+fi
 
 echo ""
 echo "完了!"
