@@ -16,15 +16,16 @@
 	prune = true
 # commit時のeditorを指定
 [core]
-	editor = code --wait
+	editor = nvim
 	quotepath = false
+	hooksPath = ~/.config/git/hooks
 # 読んで字の如く	
 [init]
 	defaultBranch = main
 [push]
 	default = simple
 [sequence]
-	editor = code --wait
+	editor = nvim
 [gpg]
 	format = ssh
 [commit]
