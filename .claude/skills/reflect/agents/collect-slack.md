@@ -18,8 +18,8 @@ Slack MCP経由で、指定日の自分の発言と参加スレッドの文脈�
 
 1. **最初に1回のToolSearchで**必要なSlackツールをまとめてロードする:
    `select:mcp__plugin_slack_slack__slack_search_public_and_private,mcp__plugin_slack_slack__slack_read_thread`
-2. 自分の発言を検索する: 検索クエリに`from:me`と日付修飾子（`on:YYYY-MM-DD`。使えなければ`after:前日 before:翌日`）を使う
-   - `from:me`が解決されない場合は、自分のユーザー名を特定して`from:@<username>`で再試行する
+2. 自分の発言を検索する: `from:<@ユーザーID>`と日付修飾子（`on:YYYY-MM-DD`。効かなければ`after:前日 before:翌日`）を使う
+   - ログイン中ユーザーのIDは検索ツールのdescriptionに記載されている。**`from:me`は解決されないので使わない**（実機確認済み）
 3. ヒットをスレッド単位にグルーピングする
 4. 自分が発言した各スレッドを`slack_read_thread`で読み、親メッセージと自分の発言前後の文脈を把握する
 5. 下記フォーマットで出力先にWriteする
