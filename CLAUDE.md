@@ -3,3 +3,8 @@
   - dotfilesに入れる場合は`scripts/link.sh`のFILES配列にも追記すること
 - 個人用パッケージは`Brewfile.personal`に入れる（`Brewfile`は共用想定）
 - `scripts/macos.sh`にmacOS設定を追加する場合はsudo不要な項目のみ
+- Claude Codeのユーザー設定（`~/.claude/settings.json`）はsymlinkせずbase＋同期方式で管理する:
+  - 共有設定の変更は`.claude/settings.base.json`を編集し、`.claude/scripts/claude_settings_sync.py apply`で反映する
+  - キーの分類（shared/merged/local）は`.claude/settings-contract.json`で定義する
+  - 実ファイル側で育った設定を共有したいときは`claude_settings_sync.py promote <key>`でbaseへ昇格してコミットする
+  - マシン固有の設定は実ファイルにのみ置き、baseに入れない
