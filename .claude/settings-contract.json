@@ -17,7 +17,7 @@
     "skipAutoPermissionPrompt"
   ],
   "merged": {
-    "env": [],
+    "env": ["CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS", "CLAUDE_AFK_TIMEOUT_MS"],
     "enabledPlugins": ["*@claude-plugins-official"],
     "extraKnownMarketplaces": []
   },
