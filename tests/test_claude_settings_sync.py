@@ -130,5 +130,54 @@ class TestCheck(unittest.TestCase):
         self.assertEqual(findings["drift"], ["env.FLAG"])
 
 
+class TestPromote(unittest.TestCase):
+    def test_promote_shared_key(self):
+        new_base = sync.promote({}, {"model": "real-m"}, CONTRACT, ["model"])
+        self.assertEqual(new_base["model"], "real-m")
+
+    def test_promote_merged_subkey(self):
+        new_base = sync.promote(
+            {"env": {"A": "1"}}, {"env": {"A": "1", "B": "2"}}, CONTRACT, ["env.B"]
+        )
+        self.assertEqual(new_base["env"], {"A": "1", "B": "2"})
+
+    def test_promote_merged_whole_key_copies_only_shared_subkeys(self):
+        # merged キー丸ごと昇格では、パターン一致とbase既存サブキーのみコピーし、
+        # パターン不一致のサブキーはbaseにコピーされない
+        base = {"enabledPlugins": {"a@claude-plugins-official": True}}
+        real = {"enabledPlugins": {
+            "a@claude-plugins-official": True,
+            "b@claude-plugins-official": True,
+            "x@company-market": True,
+        }}
+        new_base = sync.promote(base, real, CONTRACT, ["enabledPlugins"])
+        self.assertEqual(new_base["enabledPlugins"], {
+            "a@claude-plugins-official": True,
+            "b@claude-plugins-official": True,
+        })
+
+    def test_promote_rejects_local_key(self):
+        with self.assertRaises(sync.ContractError):
+            sync.promote({}, {"localOnlyKey": "on"}, CONTRACT, ["localOnlyKey"])
+
+    def test_promote_rejects_unclassified_key(self):
+        with self.assertRaises(sync.ContractError):
+            sync.promote({}, {"newRuntimeKey": True}, CONTRACT, ["newRuntimeKey"])
+
+    def test_promote_rejects_missing_key_in_real(self):
+        with self.assertRaises(sync.ContractError):
+            sync.promote({}, {}, CONTRACT, ["model"])
+
+    def test_promote_rejects_subkey_on_shared_key(self):
+        with self.assertRaises(sync.ContractError):
+            sync.promote({}, {"model": "m"}, CONTRACT, ["model.sub"])
+
+    def test_promote_does_not_mutate_inputs(self):
+        base = {"env": {"A": "1"}}
+        real = {"env": {"A": "1", "B": "2"}}
+        sync.promote(base, real, CONTRACT, ["env.B"])
+        self.assertEqual(base, {"env": {"A": "1"}})
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -73,3 +73,35 @@ def check(base, real, contract):
             elif any(fnmatch.fnmatch(sub, p) for p in patterns):
                 findings["promotable"].append(f"{key}.{sub}")
     return findings
+
+
+def promote(base, real, contract, keys):
+    """指定キーの real 側の値を base に写した新しい base を返す。"""
+    result = json.loads(json.dumps(base))  # deep copy
+    for dotted in keys:
+        key, _, sub = dotted.partition(".")
+        if key in contract["local"]:
+            raise ContractError(f"{key} は local 分類のため昇格できません")
+        if key not in contract["shared"] and key not in contract["merged"]:
+            raise ContractError(
+                f"{key} は契約で分類されていません。"
+                "先に settings-contract.json に分類を追加してください"
+            )
+        if key not in real:
+            raise ContractError(f"実ファイルに {key} がありません")
+        if sub:
+            if key not in contract["merged"]:
+                raise ContractError(f"{key} はサブキー指定に対応していません（merged キーのみ）")
+            if sub not in (real[key] or {}):
+                raise ContractError(f"実ファイルに {dotted} がありません")
+            result.setdefault(key, {})[sub] = real[key][sub]
+        elif key in contract["merged"]:
+            patterns = contract["merged"][key]
+            base_sub = dict(result.get(key) or {})
+            for s, v in (real[key] or {}).items():
+                if s in base_sub or any(fnmatch.fnmatch(s, p) for p in patterns):
+                    base_sub[s] = v
+            result[key] = base_sub
+        else:
+            result[key] = real[key]
+    return result
