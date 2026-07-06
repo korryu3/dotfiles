@@ -92,7 +92,8 @@ class TestCheck(unittest.TestCase):
         findings = sync.check(base, real, CONTRACT)
         self.assertEqual(
             findings,
-            {"unclassified": [], "drift": [], "promotable": [], "missing_in_base": []},
+            {"unclassified": [], "drift": [], "promotable": [], "missing_in_base": [],
+             "apply_needed": []},
         )
 
     def test_reports_unclassified_top_level_key(self):
@@ -133,6 +134,24 @@ class TestCheck(unittest.TestCase):
         real = {"env": {"FLAG": "real"}}
         findings = sync.check(base, real, CONTRACT)
         self.assertEqual(findings["drift"], ["env.FLAG"])
+
+    def test_reports_apply_needed_for_new_base_key(self):
+        findings = sync.check({"model": "m1"}, {}, CONTRACT)
+        self.assertEqual(findings["apply_needed"], ["model"])
+
+    def test_reports_apply_needed_for_new_base_merged_subkey(self):
+        base = {"env": {"A": "1", "B": "2"}}
+        real = {"env": {"A": "1"}}
+        findings = sync.check(base, real, CONTRACT)
+        self.assertEqual(findings["apply_needed"], ["env"])
+
+    def test_apply_needed_empty_when_real_has_extra_local_data(self):
+        # real側だけにあるローカルデータはapplyで変化しないので対象外
+        base = {"model": "m1"}
+        real = {"model": "m1", "localOnlyKey": "on",
+                "enabledPlugins": {"x@company-market": True}}
+        findings = sync.check(base, real, CONTRACT)
+        self.assertEqual(findings["apply_needed"], [])
 
 
 class TestPromote(unittest.TestCase):
@@ -182,6 +201,36 @@ class TestPromote(unittest.TestCase):
         real = {"env": {"A": "1", "B": "2"}}
         sync.promote(base, real, CONTRACT, ["env.B"])
         self.assertEqual(base, {"env": {"A": "1"}})
+
+    def test_promote_dotted_subkey_matching_pattern_is_allowed(self):
+        base = {"enabledPlugins": {"a@claude-plugins-official": True}}
+        real = {"enabledPlugins": {
+            "a@claude-plugins-official": True,
+            "b@claude-plugins-official": True,
+        }}
+        new_base = sync.promote(base, real, CONTRACT, ["enabledPlugins.b@claude-plugins-official"])
+        self.assertTrue(new_base["enabledPlugins"]["b@claude-plugins-official"])
+
+    def test_promote_dotted_subkey_not_matching_pattern_is_rejected(self):
+        base = {"enabledPlugins": {"a@claude-plugins-official": True}}
+        real = {"enabledPlugins": {
+            "a@claude-plugins-official": True,
+            "x@company-market": True,
+        }}
+        with self.assertRaises(sync.ContractError):
+            sync.promote(base, real, CONTRACT, ["enabledPlugins.x@company-market"])
+
+    def test_promote_dotted_subkey_with_empty_patterns_is_allowed(self):
+        # パターンリストが空のmergedキー（env）は従来どおり昇格できる
+        new_base = sync.promote({"env": {"A": "1"}}, {"env": {"A": "1", "B": "2"}}, CONTRACT, ["env.B"])
+        self.assertEqual(new_base["env"], {"A": "1", "B": "2"})
+
+    def test_promote_dotted_subkey_already_in_base_is_allowed(self):
+        # base所有済みサブキーはパターン不一致でも値更新できる
+        base = {"enabledPlugins": {"legacy@old-market": False}}
+        real = {"enabledPlugins": {"legacy@old-market": True}}
+        new_base = sync.promote(base, real, CONTRACT, ["enabledPlugins.legacy@old-market"])
+        self.assertTrue(new_base["enabledPlugins"]["legacy@old-market"])
 
 
 class TestCli(unittest.TestCase):
@@ -293,6 +342,14 @@ class TestCli(unittest.TestCase):
         result = self.run_cli("promote", "localOnlyKey")
         self.assertEqual(result.returncode, 1)
         self.assertIn("local", result.stderr)
+
+    def test_check_hook_emits_json_when_apply_needed(self):
+        self.base_p.write_text(json.dumps({"model": "m1"}))
+        self.real_p.write_text(json.dumps({}))
+        result = self.run_cli("check", "--hook")
+        self.assertEqual(result.returncode, 0)
+        payload = json.loads(result.stdout)
+        self.assertIn("apply", payload["hookSpecificOutput"]["additionalContext"])
 
 
 if __name__ == "__main__":

@@ -58,7 +58,10 @@ def merge(base, real, contract):
 
 def check(base, real, contract):
     """base と実ファイルのドリフトを種別ごとのリストで返す。"""
-    findings = {"unclassified": [], "drift": [], "promotable": [], "missing_in_base": []}
+    findings = {
+        "unclassified": [], "drift": [], "promotable": [], "missing_in_base": [],
+        "apply_needed": [],
+    }
     classified = (
         set(contract["shared"]) | set(contract["merged"]) | set(contract["local"])
     )
@@ -77,6 +80,8 @@ def check(base, real, contract):
                     findings["drift"].append(f"{key}.{sub}")
             elif any(fnmatch.fnmatch(sub, p) for p in patterns):
                 findings["promotable"].append(f"{key}.{sub}")
+    merged = merge(base, real, contract)
+    findings["apply_needed"] = sorted(k for k in merged if merged.get(k) != real.get(k))
     return findings
 
 
@@ -99,6 +104,17 @@ def promote(base, real, contract, keys):
                 raise ContractError(f"{key} はサブキー指定に対応していません（merged キーのみ）")
             if sub not in (real[key] or {}):
                 raise ContractError(f"実ファイルに {dotted} がありません")
+            patterns = contract["merged"][key]
+            base_sub = base.get(key) or {}
+            if (
+                patterns
+                and not any(fnmatch.fnmatch(sub, p) for p in patterns)
+                and sub not in base_sub
+            ):
+                raise ContractError(
+                    f"{dotted} はパターン不一致のためローカル分類です。"
+                    "共有するには settings-contract.json のパターンを更新してください"
+                )
             result.setdefault(key, {})[sub] = real[key][sub]
         elif key in contract["merged"]:
             patterns = contract["merged"][key]
@@ -151,6 +167,7 @@ FINDING_LABELS = {
     "drift": "base と実ファイルで値が異なるキー（promote で昇格 / apply で base に戻す）",
     "promotable": "昇格候補のサブキー（promote <key.sub> で共有）",
     "missing_in_base": "base に無い共有キー（promote <key> で共有）",
+    "apply_needed": "apply が未反映のキー（claude_settings_sync.py apply を実行）",
 }
 
 
