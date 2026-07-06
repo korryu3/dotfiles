@@ -1,0 +1,27 @@
+#!/bin/bash
+set -euo pipefail
+
+DOTFILES_SANDBOX="$HOME/ghq/github.com/korryu3/dotfiles/.claude/settings.sandbox.json"
+
+# === worktreeにsettings.local.jsonをsymlink ===
+# .gitがファイル（ディレクトリではない）ならworktree
+if [ -f .git ] && [ -d .claude ]; then
+  dest=".claude/settings.local.json"
+  if [ ! -e "$dest" ]; then
+    common_dir="$(git rev-parse --path-format=absolute --git-common-dir)"
+    project_local="${common_dir}/../.claude/settings.local.json"
+    if [ -f "$project_local" ]; then
+      ln -s "$project_local" "$dest"
+    elif [ -f "$DOTFILES_SANDBOX" ]; then
+      ln -s "$DOTFILES_SANDBOX" "$dest"
+    fi
+  fi
+fi
+
+# === ローカルhookフォワード ===
+# core.hooksPath設定時、.git/hooks/は無視される。手動で実行して共存させる。
+common_dir="$(git rev-parse --path-format=absolute --git-common-dir)"
+local_hook="${common_dir}/hooks/post-checkout"
+if [ -x "$local_hook" ]; then
+  exec "$local_hook" "$@"
+fi
