@@ -18,6 +18,7 @@ FILES=(
   .config/alacritty/alacritty.toml
   .config/alacritty/keybindings.toml
   .config/mise/config.toml
+  .config/git/hooks
   .config/git/ignore
   .tmux.conf
   .colima/default/colima.yaml
