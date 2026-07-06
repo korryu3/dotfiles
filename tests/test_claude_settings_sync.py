@@ -1,4 +1,9 @@
+import glob
 import importlib.util
+import json
+import subprocess
+import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -177,6 +182,117 @@ class TestPromote(unittest.TestCase):
         real = {"env": {"A": "1", "B": "2"}}
         sync.promote(base, real, CONTRACT, ["env.B"])
         self.assertEqual(base, {"env": {"A": "1"}})
+
+
+class TestCli(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.dir = Path(self.tmp.name)
+        self.base_p = self.dir / "base.json"
+        self.contract_p = self.dir / "contract.json"
+        self.real_p = self.dir / "real.json"
+        self.contract_p.write_text(json.dumps(CONTRACT))
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def run_cli(self, *argv):
+        return subprocess.run(
+            [sys.executable, str(SCRIPT),
+             "--base", str(self.base_p),
+             "--contract", str(self.contract_p),
+             "--real", str(self.real_p), *argv],
+            capture_output=True, text=True)
+
+    def backups(self):
+        return glob.glob(str(self.dir / "real.json.bak-*"))
+
+    def test_apply_creates_real_from_base_when_missing(self):
+        self.base_p.write_text(json.dumps({"model": "m1"}))
+        result = self.run_cli("apply")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(self.real_p.read_text()), {"model": "m1"})
+        self.assertEqual(self.backups(), [])  # 新規作成時はバックアップ不要
+
+    def test_apply_is_idempotent_and_skips_backup_when_no_change(self):
+        self.base_p.write_text(json.dumps({"model": "m1"}))
+        self.real_p.write_text(json.dumps({"model": "m1"}))
+        result = self.run_cli("apply")
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("変更なし", result.stdout)
+        self.assertEqual(self.backups(), [])
+
+    def test_apply_creates_backup_when_changing(self):
+        self.base_p.write_text(json.dumps({"model": "new"}))
+        self.real_p.write_text(json.dumps({"model": "old"}))
+        result = self.run_cli("apply")
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(json.loads(self.real_p.read_text())["model"], "new")
+        self.assertEqual(len(self.backups()), 1)
+
+    def test_apply_refuses_symlink_real(self):
+        self.base_p.write_text(json.dumps({"model": "m1"}))
+        target = self.dir / "target.json"
+        target.write_text(json.dumps({"model": "old"}))
+        self.real_p.symlink_to(target)
+        result = self.run_cli("apply")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("symlink", result.stderr)
+        self.assertEqual(json.loads(target.read_text())["model"], "old")  # 未変更
+
+    def test_apply_aborts_on_broken_json_without_write(self):
+        self.base_p.write_text(json.dumps({"model": "m1"}))
+        self.real_p.write_text("{broken")
+        result = self.run_cli("apply")
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(self.real_p.read_text(), "{broken")  # 未変更
+        self.assertEqual(self.backups(), [])
+
+    def test_apply_rejects_contract_violation_in_base(self):
+        self.base_p.write_text(json.dumps({"mysteryKey": True}))
+        self.real_p.write_text(json.dumps({}))
+        result = self.run_cli("apply")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("mysteryKey", result.stderr)
+
+    def test_check_hook_is_silent_when_synced(self):
+        self.base_p.write_text(json.dumps({"model": "m1"}))
+        self.real_p.write_text(json.dumps({"model": "m1"}))
+        result = self.run_cli("check", "--hook")
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+
+    def test_check_hook_emits_session_start_json_on_findings(self):
+        self.base_p.write_text(json.dumps({"model": "base-m"}))
+        self.real_p.write_text(json.dumps({"model": "real-m"}))
+        result = self.run_cli("check", "--hook")
+        self.assertEqual(result.returncode, 0)
+        payload = json.loads(result.stdout)
+        self.assertEqual(
+            payload["hookSpecificOutput"]["hookEventName"], "SessionStart")
+        self.assertIn("model", payload["hookSpecificOutput"]["additionalContext"])
+
+    def test_check_human_output(self):
+        self.base_p.write_text(json.dumps({}))
+        self.real_p.write_text(json.dumps({"newRuntimeKey": True}))
+        result = self.run_cli("check")
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("newRuntimeKey", result.stdout)
+
+    def test_promote_writes_base_without_backup(self):
+        self.base_p.write_text(json.dumps({}))
+        self.real_p.write_text(json.dumps({"model": "real-m"}))
+        result = self.run_cli("promote", "model")
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(json.loads(self.base_p.read_text())["model"], "real-m")
+        self.assertEqual(glob.glob(str(self.dir / "base.json.bak-*")), [])
+
+    def test_promote_contract_error_exits_1(self):
+        self.base_p.write_text(json.dumps({}))
+        self.real_p.write_text(json.dumps({"localOnlyKey": "on"}))
+        result = self.run_cli("promote", "localOnlyKey")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("local", result.stderr)
 
 
 if __name__ == "__main__":

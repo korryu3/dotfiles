@@ -9,8 +9,13 @@ settings-contract.json の分類（shared / merged / local）に従って同期�
   promote  実ファイルの値を base へ昇格する
 """
 
+import argparse
+import datetime
 import fnmatch
 import json
+import os
+import sys
+import tempfile
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -105,3 +110,129 @@ def promote(base, real, contract, keys):
         else:
             result[key] = real[key]
     return result
+
+
+# --- IO 層 --------------------------------------------------------------------
+
+
+def die(message):
+    print(f"エラー: {message}", file=sys.stderr)
+    sys.exit(1)
+
+
+def load_json(path, required=True):
+    if not path.exists():
+        if required:
+            die(f"{path} がありません")
+        return {}
+    try:
+        return json.loads(path.read_text())
+    except json.JSONDecodeError as e:
+        die(f"{path} の JSON が壊れています（{e}）。何も書き込まずに中断しました。手動で修正してください")
+
+
+def write_json_atomic(path, data, backup):
+    text = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
+    if backup and path.exists():
+        stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        path.with_name(f"{path.name}.bak-{stamp}").write_text(path.read_text())
+    fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=f".{path.name}.")
+    try:
+        with os.fdopen(fd, "w") as f:
+            f.write(text)
+        os.replace(tmp, path)
+    finally:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+
+
+FINDING_LABELS = {
+    "unclassified": "未分類キー（settings-contract.json で分類してください）",
+    "drift": "base と実ファイルで値が異なるキー（promote で昇格 / apply で base に戻す）",
+    "promotable": "昇格候補のサブキー（promote <key.sub> で共有）",
+    "missing_in_base": "base に無い共有キー（promote <key> で共有）",
+}
+
+
+def format_findings(findings):
+    lines = []
+    for kind, label in FINDING_LABELS.items():
+        if findings[kind]:
+            lines.append(f"[{label}]")
+            lines.extend(f"  - {k}" for k in findings[kind])
+    return "\n".join(lines)
+
+
+def cmd_apply(args):
+    contract = load_json(args.contract)
+    base = load_json(args.base)
+    if args.real.is_symlink():
+        die(f"{args.real} が symlink のままです。実ファイル化の移行を先に実施してください")
+    real = load_json(args.real, required=False)
+    try:
+        validate_base(base, contract)
+    except ContractError as e:
+        die(str(e))
+    merged = merge(base, real, contract)
+    if args.real.exists() and merged == real:
+        print("変更なし（同期済み）")
+        return
+    changed = sorted(k for k in merged if real.get(k) != merged.get(k))
+    write_json_atomic(args.real, merged, backup=args.real.exists())
+    print(f"適用しました: {', '.join(changed)}")
+    print("反映には Claude Code の再起動が必要です")
+
+
+def cmd_check(args):
+    contract = load_json(args.contract)
+    base = load_json(args.base)
+    real = load_json(args.real, required=False)
+    report = format_findings(check(base, real, contract))
+    if args.hook:
+        if report:
+            context = (
+                "settings.json のドリフトを検出しました。\n" + report
+                + "\n扱い（promote で共有 / settings-contract.json で local 化 / "
+                "apply で base に戻す）をユーザーに確認すること。"
+            )
+            print(json.dumps({"hookSpecificOutput": {
+                "hookEventName": "SessionStart",
+                "additionalContext": context,
+            }}, ensure_ascii=False))
+    else:
+        print(report if report else "ドリフトなし")
+
+
+def cmd_promote(args):
+    contract = load_json(args.contract)
+    base = load_json(args.base)
+    real = load_json(args.real)
+    try:
+        new_base = promote(base, real, contract, args.keys)
+    except ContractError as e:
+        die(str(e))
+    if new_base == base:
+        print("変更なし（昇格済み）")
+        return
+    write_json_atomic(args.base, new_base, backup=False)
+    print(f"base に昇格しました: {', '.join(args.keys)}")
+    print(f"dotfiles をコミットしてください: {args.base}")
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--base", type=Path, default=DEFAULT_BASE)
+    parser.add_argument("--contract", type=Path, default=DEFAULT_CONTRACT)
+    parser.add_argument("--real", type=Path, default=DEFAULT_REAL)
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("apply")
+    p_check = sub.add_parser("check")
+    p_check.add_argument("--hook", action="store_true")
+    p_promote = sub.add_parser("promote")
+    p_promote.add_argument("keys", nargs="+")
+    args = parser.parse_args(argv)
+    {"apply": cmd_apply, "check": cmd_check, "promote": cmd_promote}[args.command](args)
+
+
+if __name__ == "__main__":
+    main()
