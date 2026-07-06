@@ -49,3 +49,27 @@ def merge(base, real, contract):
             merged_value.update(base[key])
             result[key] = merged_value
     return result
+
+
+def check(base, real, contract):
+    """base と実ファイルのドリフトを種別ごとのリストで返す。"""
+    findings = {"unclassified": [], "drift": [], "promotable": [], "missing_in_base": []}
+    classified = (
+        set(contract["shared"]) | set(contract["merged"]) | set(contract["local"])
+    )
+    findings["unclassified"] = sorted(k for k in real if k not in classified)
+    for key in contract["shared"]:
+        if key in base and key in real and real[key] != base[key]:
+            findings["drift"].append(key)
+        elif key in real and key not in base:
+            findings["missing_in_base"].append(key)
+    for key, patterns in contract["merged"].items():
+        base_sub = base.get(key) or {}
+        real_sub = real.get(key) or {}
+        for sub, value in real_sub.items():
+            if sub in base_sub:
+                if base_sub[sub] != value:
+                    findings["drift"].append(f"{key}.{sub}")
+            elif any(fnmatch.fnmatch(sub, p) for p in patterns):
+                findings["promotable"].append(f"{key}.{sub}")
+    return findings

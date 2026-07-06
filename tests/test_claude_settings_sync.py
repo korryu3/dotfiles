@@ -80,5 +80,55 @@ class TestMerge(unittest.TestCase):
         self.assertEqual(base, {"env": {"FLAG": "base"}})
 
 
+class TestCheck(unittest.TestCase):
+    def test_no_findings_when_synced(self):
+        base = {"model": "m1", "env": {"FLAG": "1"}}
+        real = {"model": "m1", "env": {"FLAG": "1"}, "localOnlyKey": "on"}
+        findings = sync.check(base, real, CONTRACT)
+        self.assertEqual(
+            findings,
+            {"unclassified": [], "drift": [], "promotable": [], "missing_in_base": []},
+        )
+
+    def test_reports_unclassified_top_level_key(self):
+        findings = sync.check({}, {"newRuntimeKey": True}, CONTRACT)
+        self.assertEqual(findings["unclassified"], ["newRuntimeKey"])
+
+    def test_reports_drift_on_shared_key(self):
+        findings = sync.check({"model": "base-m"}, {"model": "real-m"}, CONTRACT)
+        self.assertEqual(findings["drift"], ["model"])
+
+    def test_reports_shared_key_missing_in_base(self):
+        findings = sync.check({}, {"model": "real-m"}, CONTRACT)
+        self.assertEqual(findings["missing_in_base"], ["model"])
+
+    def test_reports_promotable_subkey_matching_pattern(self):
+        base = {"enabledPlugins": {"a@claude-plugins-official": True}}
+        real = {"enabledPlugins": {
+            "a@claude-plugins-official": True,
+            "b@claude-plugins-official": True,
+        }}
+        findings = sync.check(base, real, CONTRACT)
+        self.assertEqual(findings["promotable"], ["enabledPlugins.b@claude-plugins-official"])
+
+    def test_silent_on_subkey_not_matching_pattern(self):
+        # パターンに一致しないサブキーは報告されない（静かにローカルに留まる）
+        base = {"enabledPlugins": {"a@claude-plugins-official": True}}
+        real = {
+            "enabledPlugins": {"a@claude-plugins-official": True, "x@company-market": True},
+            "extraKnownMarketplaces": {"company-market": {"source": {}}},
+            "env": {"OTEL_EXPORTER_OTLP_ENDPOINT": "https://example.com"},
+        }
+        findings = sync.check(base, real, CONTRACT)
+        self.assertEqual(findings["promotable"], [])
+        self.assertEqual(findings["unclassified"], [])
+
+    def test_reports_drift_on_merged_subkey(self):
+        base = {"env": {"FLAG": "base"}}
+        real = {"env": {"FLAG": "real"}}
+        findings = sync.check(base, real, CONTRACT)
+        self.assertEqual(findings["drift"], ["env.FLAG"])
+
+
 if __name__ == "__main__":
     unittest.main()
