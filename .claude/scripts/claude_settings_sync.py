@@ -83,8 +83,8 @@ def merge(base, real, contract):
 def check(base, real, contract):
     """base と実ファイルのドリフトを種別ごとのリストで返す。"""
     findings = {
-        "unclassified": [], "drift": [], "promotable": [], "missing_in_base": [],
-        "apply_needed": [],
+        "unclassified": [], "unclassified_sub": [], "drift": [], "promotable": [],
+        "missing_in_base": [], "apply_needed": [],
     }
     classified = (
         set(contract["shared"]) | set(contract["merged"]) | set(contract["local"])
@@ -104,6 +104,8 @@ def check(base, real, contract):
                     findings["drift"].append(f"{key}.{sub}")
             elif any(fnmatch.fnmatch(sub, p) for p in rules["share"]):
                 findings["promotable"].append(f"{key}.{sub}")
+            elif not any(fnmatch.fnmatch(sub, p) for p in rules["local"]):
+                findings["unclassified_sub"].append(f"{key}.{sub}")
     merged = merge(base, real, contract)
     findings["apply_needed"] = sorted(k for k in merged if merged.get(k) != real.get(k))
     return findings
@@ -197,6 +199,7 @@ def load_contract(path):
 
 FINDING_LABELS = {
     "unclassified": "未分類キー（settings-contract.json で分類してください）",
+    "unclassified_sub": "未分類のサブキー（settings-contract.json の share / local パターンで分類してください）",
     "drift": "base と実ファイルで値が異なるキー（promote で昇格 / apply で base に戻す）",
     "promotable": "昇格候補のサブキー（promote <key.sub> で共有）",
     "missing_in_base": "base に無い共有キー（promote <key> で共有）",

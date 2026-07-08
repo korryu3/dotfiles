@@ -120,8 +120,8 @@ class TestCheck(unittest.TestCase):
         findings = sync.check(base, real, CONTRACT)
         self.assertEqual(
             findings,
-            {"unclassified": [], "drift": [], "promotable": [], "missing_in_base": [],
-             "apply_needed": []},
+            {"unclassified": [], "unclassified_sub": [], "drift": [],
+             "promotable": [], "missing_in_base": [], "apply_needed": []},
         )
 
     def test_reports_unclassified_top_level_key(self):
@@ -145,17 +145,30 @@ class TestCheck(unittest.TestCase):
         findings = sync.check(base, real, CONTRACT)
         self.assertEqual(findings["promotable"], ["enabledPlugins.b@claude-plugins-official"])
 
-    def test_silent_on_subkey_not_matching_pattern(self):
-        # パターンに一致しないサブキーは報告されない（静かにローカルに留まる）
-        base = {"enabledPlugins": {"a@claude-plugins-official": True}}
+    def test_silent_on_subkey_matching_local_pattern(self):
+        # localパターンに一致するサブキーは分類済みなので報告されない
         real = {
-            "enabledPlugins": {"a@claude-plugins-official": True, "x@company-market": True},
+            "enabledPlugins": {"x@company-market": True},
             "extraKnownMarketplaces": {"company-market": {"source": {}}},
-            "env": {"OTEL_EXPORTER_OTLP_ENDPOINT": "https://example.com"},
+            "env": {"LOCAL_TOKEN": "x"},
         }
-        findings = sync.check(base, real, CONTRACT)
+        findings = sync.check({}, real, CONTRACT)
+        self.assertEqual(findings["unclassified_sub"], [])
+        self.assertEqual(findings["promotable"], [])
+
+    def test_reports_unclassified_merged_subkey(self):
+        # share/localのどちらにも一致しない新規サブキーは未分類として通知される
+        findings = sync.check({}, {"env": {"OTEL_X": "1"}}, CONTRACT)
+        self.assertEqual(findings["unclassified_sub"], ["env.OTEL_X"])
         self.assertEqual(findings["promotable"], [])
         self.assertEqual(findings["unclassified"], [])
+
+    def test_share_pattern_wins_over_local_pattern(self):
+        # enabledPluginsのlocalは"*"（全一致）だが、share一致が優先されpromotableになる
+        findings = sync.check(
+            {}, {"enabledPlugins": {"b@claude-plugins-official": True}}, CONTRACT)
+        self.assertEqual(findings["promotable"], ["enabledPlugins.b@claude-plugins-official"])
+        self.assertEqual(findings["unclassified_sub"], [])
 
     def test_reports_drift_on_merged_subkey(self):
         base = {"env": {"FLAG": "base"}}
@@ -388,6 +401,14 @@ class TestCli(unittest.TestCase):
         result = self.run_cli("check")
         self.assertEqual(result.returncode, 1)
         self.assertIn("share", result.stderr)
+
+    def test_check_human_output_reports_unclassified_subkey(self):
+        self.base_p.write_text(json.dumps({}))
+        self.real_p.write_text(json.dumps({"env": {"OTEL_X": "1"}}))
+        result = self.run_cli("check")
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("env.OTEL_X", result.stdout)
+        self.assertIn("未分類のサブキー", result.stdout)
 
 
 if __name__ == "__main__":
