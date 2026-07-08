@@ -22,3 +22,5 @@
 **/.claude/agent-memory-local
 **/.claude/first-run
 **/.claude/assistant-daemon-state.json
+
+**/.claude/.cc-writes/
