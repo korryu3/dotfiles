@@ -17,7 +17,7 @@
     "skipAutoPermissionPrompt"
   ],
   "merged": {
-    "env": { "share": [], "local": [] },
+    "env": { "share": [], "local": ["OTEL_*", "CLAUDE_CODE_ENABLE_TELEMETRY"] },
     "enabledPlugins": { "share": ["*@claude-plugins-official"], "local": ["*"] },
     "extraKnownMarketplaces": { "share": [], "local": ["*"] }
   },
