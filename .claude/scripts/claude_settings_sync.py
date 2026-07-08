@@ -53,6 +53,9 @@ def validate_contract(contract):
                 f'merged.{key} の share に "*" は使えません'
                 "（全サブキーを共有するなら shared に分類してください）"
             )
+    retired = contract.get("retired", [])
+    if not isinstance(retired, list) or not all(isinstance(k, str) for k in retired):
+        raise ContractError("retired は文字列のリストで定義してください")
 
 
 def validate_base(base, contract):
@@ -64,6 +67,12 @@ def validate_base(base, contract):
             "base に共有分類でないキーがあります: " + ", ".join(unknown)
             + "（settings-contract.json の shared / merged に分類を追加してください）"
         )
+    for dotted in contract.get("retired", []):
+        key, _, sub = dotted.partition(".")
+        if (not sub and key in base) or (sub and sub in (base.get(key) or {})):
+            raise ContractError(
+                f"{dotted} は retired ですが base に存在します。base から削除してください"
+            )
 
 
 def merge(base, real, contract):
@@ -77,6 +86,12 @@ def merge(base, real, contract):
             merged_value = dict(result.get(key) or {})
             merged_value.update(base[key])
             result[key] = merged_value
+    for dotted in contract.get("retired", []):
+        key, _, sub = dotted.partition(".")
+        if not sub:
+            result.pop(key, None)
+        elif isinstance(result.get(key), dict):
+            result[key].pop(sub, None)
     return result
 
 
@@ -86,11 +101,15 @@ def check(base, real, contract):
         "unclassified": [], "unclassified_sub": [], "drift": [], "promotable": [],
         "missing_in_base": [], "apply_needed": [],
     }
+    retired = set(contract.get("retired", []))
     classified = (
         set(contract["shared"]) | set(contract["merged"]) | set(contract["local"])
     )
-    findings["unclassified"] = sorted(k for k in real if k not in classified)
+    findings["unclassified"] = sorted(
+        k for k in real if k not in classified and k not in retired)
     for key in contract["shared"]:
+        if key in retired:
+            continue
         if key in base and key in real and real[key] != base[key]:
             findings["drift"].append(key)
         elif key in real and key not in base:
@@ -99,6 +118,8 @@ def check(base, real, contract):
         base_sub = base.get(key) or {}
         real_sub = real.get(key) or {}
         for sub, value in real_sub.items():
+            if f"{key}.{sub}" in retired:
+                continue
             if sub in base_sub:
                 if base_sub[sub] != value:
                     findings["drift"].append(f"{key}.{sub}")
@@ -109,7 +130,8 @@ def check(base, real, contract):
     merged = merge(base, real, contract)
     drifted = {d.split(".", 1)[0] for d in findings["drift"]}
     findings["apply_needed"] = sorted(
-        k for k in merged if merged.get(k) != real.get(k) and k not in drifted
+        k for k in set(merged) | set(real)
+        if merged.get(k) != real.get(k) and k not in drifted
     )
     return findings
 
@@ -119,6 +141,11 @@ def promote(base, real, contract, keys):
     result = json.loads(json.dumps(base))  # deep copy
     for dotted in keys:
         key, _, sub = dotted.partition(".")
+        if dotted in set(contract.get("retired", [])):
+            raise ContractError(
+                f"{dotted} は retired（廃止済み）です。"
+                "復活させるには settings-contract.json の retired から外してください"
+            )
         if key in contract["local"]:
             raise ContractError(f"{key} は local 分類のため昇格できません")
         if key not in contract["shared"] and key not in contract["merged"]:
@@ -150,8 +177,11 @@ def promote(base, real, contract, keys):
             result.setdefault(key, {})[sub] = real[key][sub]
         elif key in contract["merged"]:
             patterns = contract["merged"][key]["share"]
+            retired = set(contract.get("retired", []))
             base_sub = dict(result.get(key) or {})
             for s, v in (real[key] or {}).items():
+                if f"{key}.{s}" in retired:
+                    continue
                 if s in base_sub or any(fnmatch.fnmatch(s, p) for p in patterns):
                     base_sub[s] = v
             result[key] = base_sub
@@ -208,7 +238,7 @@ FINDING_LABELS = {
     "unclassified_sub": "未分類のサブキー（settings-contract.json の share / local パターンで分類してください）",
     "drift": "base と実ファイルで値が異なるキー（promote で昇格 / apply で base に戻す）",
     "promotable": "昇格候補のサブキー（promote <key.sub> で共有）",
-    "missing_in_base": "base に無い共有キー（promote <key> で共有）",
+    "missing_in_base": "base に無い共有キー（promote <key> で共有。base 側で廃止したキーなら settings-contract.json の retired へ）",
     "apply_needed": "apply が未反映のキー（claude_settings_sync.py apply を実行）",
 }
 
@@ -236,7 +266,8 @@ def cmd_apply(args):
     if args.real.exists() and merged == real:
         print("変更なし（同期済み）")
         return
-    changed = sorted(k for k in merged if real.get(k) != merged.get(k))
+    changed = sorted(
+        k for k in set(merged) | set(real) if real.get(k) != merged.get(k))
     write_json_atomic(args.real, merged, backup=args.real.exists())
     print(f"適用しました: {', '.join(changed)}")
     print("反映には Claude Code の再起動が必要です")

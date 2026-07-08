@@ -52,6 +52,11 @@ class TestValidateContract(unittest.TestCase):
         with self.assertRaises(sync.ContractError):
             sync.validate_contract(contract)
 
+    def test_rejects_non_list_retired(self):
+        contract = {"shared": [], "merged": {}, "local": [], "retired": "model"}
+        with self.assertRaises(sync.ContractError):
+            sync.validate_contract(contract)
+
 
 class TestValidateBase(unittest.TestCase):
     def test_accepts_base_with_only_classified_keys(self):
@@ -294,6 +299,62 @@ class TestPromote(unittest.TestCase):
         self.assertIn("local", str(ctx.exception))
 
 
+class TestRetired(unittest.TestCase):
+    def test_merge_removes_retired_top_level_key(self):
+        contract = dict(CONTRACT, retired=["model"])
+        result = sync.merge({}, {"model": "zombie"}, contract)
+        self.assertNotIn("model", result)
+
+    def test_merge_removes_retired_merged_subkey(self):
+        contract = dict(CONTRACT, retired=["env.OLD_FLAG"])
+        result = sync.merge({}, {"env": {"OLD_FLAG": "1", "LOCAL_A": "2"}}, contract)
+        self.assertEqual(result["env"], {"LOCAL_A": "2"})
+
+    def test_check_does_not_suggest_promote_for_retired_shared_key(self):
+        # 逆方向提案（ゾンビ復活）の抑止。除去はapply_neededが促す
+        contract = dict(CONTRACT, retired=["model"])
+        findings = sync.check({}, {"model": "zombie"}, contract)
+        self.assertEqual(findings["missing_in_base"], [])
+        self.assertEqual(findings["apply_needed"], ["model"])
+
+    def test_check_does_not_suggest_promotable_for_retired_subkey(self):
+        contract = dict(CONTRACT, retired=["enabledPlugins.a@claude-plugins-official"])
+        findings = sync.check(
+            {}, {"enabledPlugins": {"a@claude-plugins-official": True}}, contract)
+        self.assertEqual(findings["promotable"], [])
+        self.assertEqual(findings["apply_needed"], ["enabledPlugins"])
+
+    def test_unclassified_skips_retired_top_level_key(self):
+        # 分類リストから外してretiredだけに載せた最終形でも未分類と騒がない
+        contract = dict(CONTRACT, retired=["oldTopKey"])
+        findings = sync.check({}, {"oldTopKey": True}, contract)
+        self.assertEqual(findings["unclassified"], [])
+        self.assertEqual(findings["apply_needed"], ["oldTopKey"])
+
+    def test_promote_rejects_retired_key(self):
+        contract = dict(CONTRACT, retired=["model"])
+        with self.assertRaises(sync.ContractError) as ctx:
+            sync.promote({}, {"model": "zombie"}, contract, ["model"])
+        self.assertIn("retired", str(ctx.exception))
+
+    def test_whole_key_promote_skips_retired_subkey(self):
+        contract = dict(CONTRACT, retired=["enabledPlugins.a@claude-plugins-official"])
+        real = {"enabledPlugins": {
+            "a@claude-plugins-official": True, "b@claude-plugins-official": True}}
+        new_base = sync.promote({}, real, contract, ["enabledPlugins"])
+        self.assertEqual(new_base["enabledPlugins"], {"b@claude-plugins-official": True})
+
+    def test_validate_base_rejects_retired_key_in_base(self):
+        contract = dict(CONTRACT, retired=["model"])
+        with self.assertRaises(sync.ContractError):
+            sync.validate_base({"model": "m"}, contract)
+
+    def test_validate_base_rejects_retired_subkey_in_base(self):
+        contract = dict(CONTRACT, retired=["env.OLD_FLAG"])
+        with self.assertRaises(sync.ContractError):
+            sync.validate_base({"env": {"OLD_FLAG": "1"}}, contract)
+
+
 class TestCli(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -429,6 +490,16 @@ class TestCli(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertIn("env.OTEL_X", result.stdout)
         self.assertIn("未分類のサブキー", result.stdout)
+
+    def test_apply_removes_retired_key_from_real(self):
+        contract = dict(CONTRACT, retired=["oldTopKey"])
+        self.contract_p.write_text(json.dumps(contract))
+        self.base_p.write_text(json.dumps({}))
+        self.real_p.write_text(json.dumps({"oldTopKey": True}))
+        result = self.run_cli("apply")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("oldTopKey", json.loads(self.real_p.read_text()))
+        self.assertIn("oldTopKey", result.stdout)  # 変更キーとして報告される
 
 
 if __name__ == "__main__":
