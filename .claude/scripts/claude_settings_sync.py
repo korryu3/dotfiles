@@ -130,16 +130,19 @@ def promote(base, real, contract, keys):
                 raise ContractError(f"{key} はサブキー指定に対応していません（merged キーのみ）")
             if sub not in (real[key] or {}):
                 raise ContractError(f"実ファイルに {dotted} がありません")
-            patterns = contract["merged"][key]["share"]
+            rules = contract["merged"][key]
             base_sub = base.get(key) or {}
-            if (
-                patterns
-                and not any(fnmatch.fnmatch(sub, p) for p in patterns)
-                and sub not in base_sub
+            if sub not in base_sub and not any(
+                fnmatch.fnmatch(sub, p) for p in rules["share"]
             ):
+                if any(fnmatch.fnmatch(sub, p) for p in rules["local"]):
+                    raise ContractError(
+                        f"{dotted} は local 分類です。共有するには settings-contract.json の"
+                        " local パターンから外して share に追加してください"
+                    )
                 raise ContractError(
-                    f"{dotted} はパターン不一致のためローカル分類です。"
-                    "共有するには settings-contract.json のパターンを更新してください"
+                    f"{dotted} は未分類です。先に settings-contract.json の"
+                    " share / local パターンで分類してください"
                 )
             result.setdefault(key, {})[sub] = real[key][sub]
         elif key in contract["merged"]:

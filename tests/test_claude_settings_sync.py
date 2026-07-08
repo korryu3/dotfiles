@@ -15,7 +15,7 @@ spec.loader.exec_module(sync)
 CONTRACT = {
     "shared": ["model", "hooks"],
     "merged": {
-        "env": {"share": [], "local": ["LOCAL_*"]},
+        "env": {"share": ["SHARED_*"], "local": ["LOCAL_*"]},
         "enabledPlugins": {"share": ["*@claude-plugins-official"], "local": ["*"]},
         "extraKnownMarketplaces": {"share": [], "local": ["*"]},
     },
@@ -200,12 +200,6 @@ class TestPromote(unittest.TestCase):
         new_base = sync.promote({}, {"model": "real-m"}, CONTRACT, ["model"])
         self.assertEqual(new_base["model"], "real-m")
 
-    def test_promote_merged_subkey(self):
-        new_base = sync.promote(
-            {"env": {"A": "1"}}, {"env": {"A": "1", "B": "2"}}, CONTRACT, ["env.B"]
-        )
-        self.assertEqual(new_base["env"], {"A": "1", "B": "2"})
-
     def test_promote_merged_whole_key_copies_only_shared_subkeys(self):
         # merged キー丸ごと昇格では、パターン一致とbase既存サブキーのみコピーし、
         # パターン不一致のサブキーはbaseにコピーされない
@@ -239,8 +233,8 @@ class TestPromote(unittest.TestCase):
 
     def test_promote_does_not_mutate_inputs(self):
         base = {"env": {"A": "1"}}
-        real = {"env": {"A": "1", "B": "2"}}
-        sync.promote(base, real, CONTRACT, ["env.B"])
+        real = {"env": {"A": "1", "SHARED_B": "2"}}
+        sync.promote(base, real, CONTRACT, ["env.SHARED_B"])
         self.assertEqual(base, {"env": {"A": "1"}})
 
     def test_promote_dotted_subkey_matching_pattern_is_allowed(self):
@@ -261,17 +255,30 @@ class TestPromote(unittest.TestCase):
         with self.assertRaises(sync.ContractError):
             sync.promote(base, real, CONTRACT, ["enabledPlugins.x@company-market"])
 
-    def test_promote_dotted_subkey_with_empty_patterns_is_allowed(self):
-        # パターンリストが空のmergedキー（env）は従来どおり昇格できる
-        new_base = sync.promote({"env": {"A": "1"}}, {"env": {"A": "1", "B": "2"}}, CONTRACT, ["env.B"])
-        self.assertEqual(new_base["env"], {"A": "1", "B": "2"})
-
     def test_promote_dotted_subkey_already_in_base_is_allowed(self):
         # base所有済みサブキーはパターン不一致でも値更新できる
         base = {"enabledPlugins": {"legacy@old-market": False}}
         real = {"enabledPlugins": {"legacy@old-market": True}}
         new_base = sync.promote(base, real, CONTRACT, ["enabledPlugins.legacy@old-market"])
         self.assertTrue(new_base["enabledPlugins"]["legacy@old-market"])
+
+    def test_promote_merged_subkey_matching_share_pattern(self):
+        new_base = sync.promote(
+            {"env": {"A": "1"}}, {"env": {"A": "1", "SHARED_B": "2"}},
+            CONTRACT, ["env.SHARED_B"],
+        )
+        self.assertEqual(new_base["env"], {"A": "1", "SHARED_B": "2"})
+
+    def test_promote_rejects_unclassified_subkey(self):
+        # 未分類のサブキーは昇格前にcontractでの分類を要求する
+        with self.assertRaises(sync.ContractError) as ctx:
+            sync.promote({}, {"env": {"OTEL_X": "1"}}, CONTRACT, ["env.OTEL_X"])
+        self.assertIn("未分類", str(ctx.exception))
+
+    def test_promote_rejects_local_pattern_subkey(self):
+        with self.assertRaises(sync.ContractError) as ctx:
+            sync.promote({}, {"env": {"LOCAL_TOKEN": "x"}}, CONTRACT, ["env.LOCAL_TOKEN"])
+        self.assertIn("local", str(ctx.exception))
 
 
 class TestCli(unittest.TestCase):
