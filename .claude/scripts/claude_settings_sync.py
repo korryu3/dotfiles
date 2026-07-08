@@ -7,6 +7,11 @@ settings-contract.json の分類（shared / merged / local）に従って同期�
   apply    base の共有キーを実ファイルへマージする（base が正）
   check    ドリフト（昇格候補・未分類キー）を報告する
   promote  実ファイルの値を base へ昇格する
+
+既知の限界:
+  - shared キーのマシン別上書きは表現できない（base が全マシンで勝つ）。
+    特定マシンだけ値を変えたい場合の受け皿は無く、実ファイル側の変更は
+    drift として警告され続ける。その症状が出たらこの欠落が原因。
 """
 
 import argparse
@@ -29,6 +34,25 @@ class ContractError(Exception):
 
 
 # --- 純粋ロジック層 ----------------------------------------------------------
+
+
+def validate_contract(contract):
+    """merged の各キーが {"share": [...], "local": [...]} 形式であることを確認する。"""
+    for key, rules in contract.get("merged", {}).items():
+        if (
+            not isinstance(rules, dict)
+            or set(rules) != {"share", "local"}
+            or not all(isinstance(rules[k], list) for k in ("share", "local"))
+        ):
+            raise ContractError(
+                f'merged.{key} は {{"share": [...], "local": [...]}} 形式で'
+                "定義してください（settings-contract.json を新書式に移行すること）"
+            )
+        if "*" in rules["share"]:
+            raise ContractError(
+                f'merged.{key} の share に "*" は使えません'
+                "（全サブキーを共有するなら shared に分類してください）"
+            )
 
 
 def validate_base(base, contract):
@@ -71,14 +95,14 @@ def check(base, real, contract):
             findings["drift"].append(key)
         elif key in real and key not in base:
             findings["missing_in_base"].append(key)
-    for key, patterns in contract["merged"].items():
+    for key, rules in contract["merged"].items():
         base_sub = base.get(key) or {}
         real_sub = real.get(key) or {}
         for sub, value in real_sub.items():
             if sub in base_sub:
                 if base_sub[sub] != value:
                     findings["drift"].append(f"{key}.{sub}")
-            elif any(fnmatch.fnmatch(sub, p) for p in patterns):
+            elif any(fnmatch.fnmatch(sub, p) for p in rules["share"]):
                 findings["promotable"].append(f"{key}.{sub}")
     merged = merge(base, real, contract)
     findings["apply_needed"] = sorted(k for k in merged if merged.get(k) != real.get(k))
@@ -104,7 +128,7 @@ def promote(base, real, contract, keys):
                 raise ContractError(f"{key} はサブキー指定に対応していません（merged キーのみ）")
             if sub not in (real[key] or {}):
                 raise ContractError(f"実ファイルに {dotted} がありません")
-            patterns = contract["merged"][key]
+            patterns = contract["merged"][key]["share"]
             base_sub = base.get(key) or {}
             if (
                 patterns
@@ -117,7 +141,7 @@ def promote(base, real, contract, keys):
                 )
             result.setdefault(key, {})[sub] = real[key][sub]
         elif key in contract["merged"]:
-            patterns = contract["merged"][key]
+            patterns = contract["merged"][key]["share"]
             base_sub = dict(result.get(key) or {})
             for s, v in (real[key] or {}).items():
                 if s in base_sub or any(fnmatch.fnmatch(s, p) for p in patterns):
@@ -162,6 +186,15 @@ def write_json_atomic(path, data, backup):
             os.unlink(tmp)
 
 
+def load_contract(path):
+    contract = load_json(path)
+    try:
+        validate_contract(contract)
+    except ContractError as e:
+        die(str(e))
+    return contract
+
+
 FINDING_LABELS = {
     "unclassified": "未分類キー（settings-contract.json で分類してください）",
     "drift": "base と実ファイルで値が異なるキー（promote で昇格 / apply で base に戻す）",
@@ -181,7 +214,7 @@ def format_findings(findings):
 
 
 def cmd_apply(args):
-    contract = load_json(args.contract)
+    contract = load_contract(args.contract)
     base = load_json(args.base)
     if args.real.is_symlink():
         die(f"{args.real} が symlink のままです。実ファイル化の移行を先に実施してください")
@@ -201,7 +234,7 @@ def cmd_apply(args):
 
 
 def cmd_check(args):
-    contract = load_json(args.contract)
+    contract = load_contract(args.contract)
     base = load_json(args.base)
     real = load_json(args.real, required=False)
     report = format_findings(check(base, real, contract))
@@ -221,7 +254,7 @@ def cmd_check(args):
 
 
 def cmd_promote(args):
-    contract = load_json(args.contract)
+    contract = load_contract(args.contract)
     base = load_json(args.base)
     real = load_json(args.real)
     try:

@@ -15,14 +15,42 @@ spec.loader.exec_module(sync)
 CONTRACT = {
     "shared": ["model", "hooks"],
     "merged": {
-        "env": [],
-        "enabledPlugins": ["*@claude-plugins-official"],
-        "extraKnownMarketplaces": [],
+        "env": {"share": [], "local": ["LOCAL_*"]},
+        "enabledPlugins": {"share": ["*@claude-plugins-official"], "local": ["*"]},
+        "extraKnownMarketplaces": {"share": [], "local": ["*"]},
     },
     # 実在キーと混同しないよう、テスト用の合成キー名を使う
     # （実際の分類は .claude/settings-contract.json が真実源）
     "local": ["localOnlyKey"],
 }
+
+
+class TestValidateContract(unittest.TestCase):
+    def test_accepts_share_local_dict(self):
+        sync.validate_contract(CONTRACT)  # 例外が出なければOK
+
+    def test_rejects_list_form_merged(self):
+        # 旧書式（shareパターンの裸リスト）は明確なエラーで拒否する
+        contract = {"shared": [], "merged": {"env": []}, "local": []}
+        with self.assertRaises(sync.ContractError):
+            sync.validate_contract(contract)
+
+    def test_rejects_missing_local_patterns(self):
+        contract = {"shared": [], "merged": {"env": {"share": []}}, "local": []}
+        with self.assertRaises(sync.ContractError):
+            sync.validate_contract(contract)
+
+    def test_rejects_non_list_patterns(self):
+        contract = {"shared": [], "merged": {"env": {"share": [], "local": "*"}}, "local": []}
+        with self.assertRaises(sync.ContractError):
+            sync.validate_contract(contract)
+
+    def test_rejects_bare_star_share_pattern(self):
+        # 全サブキーを共有したいならmergedではなくsharedに分類すべきで、
+        # shareの裸"*"は昇格ガードを実質無効化する設計ミスの兆候
+        contract = {"shared": [], "merged": {"env": {"share": ["*"], "local": []}}, "local": []}
+        with self.assertRaises(sync.ContractError):
+            sync.validate_contract(contract)
 
 
 class TestValidateBase(unittest.TestCase):
@@ -350,6 +378,16 @@ class TestCli(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         payload = json.loads(result.stdout)
         self.assertIn("apply", payload["hookSpecificOutput"]["additionalContext"])
+
+    def test_check_rejects_old_format_contract(self):
+        # 旧書式（裸リスト）のcontractは何も処理せずexit 1
+        self.contract_p.write_text(json.dumps(
+            {"shared": [], "merged": {"env": []}, "local": []}))
+        self.base_p.write_text(json.dumps({}))
+        self.real_p.write_text(json.dumps({}))
+        result = self.run_cli("check")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("share", result.stderr)
 
 
 if __name__ == "__main__":
