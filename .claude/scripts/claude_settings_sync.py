@@ -107,7 +107,10 @@ def check(base, real, contract):
             elif not any(fnmatch.fnmatch(sub, p) for p in rules["local"]):
                 findings["unclassified_sub"].append(f"{key}.{sub}")
     merged = merge(base, real, contract)
-    findings["apply_needed"] = sorted(k for k in merged if merged.get(k) != real.get(k))
+    drifted = {d.split(".", 1)[0] for d in findings["drift"]}
+    findings["apply_needed"] = sorted(
+        k for k in merged if merged.get(k) != real.get(k) and k not in drifted
+    )
     return findings
 
 

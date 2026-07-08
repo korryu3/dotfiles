@@ -194,6 +194,19 @@ class TestCheck(unittest.TestCase):
         findings = sync.check(base, real, CONTRACT)
         self.assertEqual(findings["apply_needed"], [])
 
+    def test_apply_needed_excludes_drifted_shared_key(self):
+        # driftとして報告済みのキーはapply_neededに重複して載せない
+        findings = sync.check({"model": "base-m"}, {"model": "real-m"}, CONTRACT)
+        self.assertEqual(findings["drift"], ["model"])
+        self.assertEqual(findings["apply_needed"], [])
+
+    def test_apply_needed_excludes_parent_of_drifted_subkey(self):
+        base = {"env": {"FLAG": "base"}}
+        real = {"env": {"FLAG": "real"}}
+        findings = sync.check(base, real, CONTRACT)
+        self.assertEqual(findings["drift"], ["env.FLAG"])
+        self.assertEqual(findings["apply_needed"], [])
+
 
 class TestPromote(unittest.TestCase):
     def test_promote_shared_key(self):
