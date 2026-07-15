@@ -175,7 +175,8 @@
     "superpowers@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
-    "slack@claude-plugins-official": true
+    "slack@claude-plugins-official": true,
+    "notion@claude-plugins-official": true
   },
   "outputStyle": "Explanatory",
   "language": "japanese",
@@ -186,5 +187,10 @@
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "skillOverrides": {
+    "prototype": "off",
+    "drawio": "off",
+    "zoom-out": "off"
+  }
 }

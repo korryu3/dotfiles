@@ -14,7 +14,8 @@
     "remoteControlAtStartup",
     "inputNeededNotifEnabled",
     "agentPushNotifEnabled",
-    "skipAutoPermissionPrompt"
+    "skipAutoPermissionPrompt",
+    "skillOverrides"
   ],
   "merged": {
     "env": { "share": [], "local": ["OTEL_*", "CLAUDE_CODE_ENABLE_TELEMETRY"] },
