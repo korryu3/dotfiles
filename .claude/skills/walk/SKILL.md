@@ -1,10 +1,10 @@
 ---
-name: talk
-description: モヤモヤを吐き出して壁打ちしたいとき、話を聞いてほしいときに使用する。
+name: walk
+description: モヤモヤを吐き出して壁打ちしたいとき、話を聞いてほしいとき、気づきを一言残したいときに使用する。
 allowed-tools: Read, Write, Bash(date:*)
 ---
 
-# talk
+# walk
 
 対話のやり方は規定しない。
 
