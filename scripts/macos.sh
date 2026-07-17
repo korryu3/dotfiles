@@ -85,6 +85,9 @@ echo "  アプリExpose: ON"
 defaults write com.apple.dock wvous-br-corner -int 14
 echo "  ホットコーナー右下: クイックノート"
 
+defaults write com.apple.dock wvous-bl-corner -int 5
+echo "  ホットコーナー左下: スクリーンセーバーを開始"
+
 defaults write com.apple.dock autohide-delay -float 0
 echo "  表示遅延: 0"
 
