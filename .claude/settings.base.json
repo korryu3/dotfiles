@@ -45,6 +45,7 @@
       "Edit(~/repos/**/.git/**)",
       "Edit(~/ghq/**/.git/**)",
       "Edit(//**/.claude/settings.json)",
+      "Edit(//**/.claude/settings.base.json)",
       "Edit(//**/.claude/settings.local.json)",
       "Bash(find * -delete*)",
       "Bash(find * -exec rm*)",
