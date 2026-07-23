@@ -1,6 +1,6 @@
 ---
 name: reviewing-critical
-description: PRのクリティカル指摘（バグ・データ損失・セキュリティ・サイレント不整合）に特化した軽量コードレビュー。固定4+動的最大5観点。日常のセルフレビューや実装途中のチェックで使用する。マージ前の最終レビューや他人のPRの精査には reviewing-code を使う。
+description: PRのクリティカル指摘（バグ・データ損失・セキュリティ・サイレント不整合）に特化した軽量コードレビュー。固定4+動的最大5観点。日常のセルフレビューや実装途中のチェックで使用する。マージ前の最終レビューや他人のPRの精査にはreviewing-codeを使う。
 allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(gh pr diff:*), Bash(gh pr view:*), Bash(gh api:*), Write, AskUserQuestion, TaskCreate, TaskUpdate
 ---
 
@@ -173,7 +173,7 @@ reviewing-codeのreport.mdと互換のフォーマットに、冒頭のメタ行
 ````markdown
 # Code Review: <branch-name>
 
-> generated-by: reviewing-critical | reviewers: nitpicker, bug-scanner, git-history, security, {動的観点名をカンマ区切り}
+> generated-by: reviewing-critical | reviewers: {起動したレビュアー名をカンマ区切り}
 
 ## サマリー
 
