@@ -1,6 +1,6 @@
 ---
 name: reviewing-code
-description: PRのコードレビューを実施する。最大14+N体のサブエージェントを一斉並列起動し、オーケストレーターが検証・トリアージ・提案生成を一貫して行う。
+description: PRの網羅的なコードレビューを実施する。最大14+N体のサブエージェントを一斉並列起動し、オーケストレーターが検証・トリアージ・提案生成を一貫して行う。マージ前の最終レビューや他人のPRの精査に使う。日常のセルフレビューや実装途中のチェックにはreviewing-criticalを使う。
 allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(gh pr diff:*), Bash(gh pr view:*), Bash(gh api:*), Write, AskUserQuestion, TaskCreate, TaskUpdate
 ---
 
@@ -175,6 +175,8 @@ report.mdの冒頭（指摘一覧の前）に記載する。
 
 ````markdown
 # Code Review: <branch-name>
+
+> generated-by: reviewing-code | reviewers: {起動したレビュアー名をカンマ区切り}
 
 ## サマリー
 
