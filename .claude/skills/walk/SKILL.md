@@ -16,4 +16,6 @@ allowed-tools: Read, Write, Bash(date:*)
 - 読み・仮説・枠組みの持ち込みは自由。それが話を聞いた証拠になる
 - 弾かれたら防衛せず、その場で調整する
 
+過去の記録は`~/.claude/context/self/`にある——journal（本人の過去の言葉）、reflect（振り返り）、daily（日々の活動の事実）、seeds.md（置いてある種）。`index.md`が索引。会話に関係するときは読み返してよく、読んだときは読んだと言う。
+
 ユーザーが「save」（または残す旨の合図）と打ったら`references/save.md`を読んで従う。それまで保存は考えない。
