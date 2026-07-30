@@ -5,3 +5,6 @@ __pycache__/
 .zshrc.local
 .claude/worktrees
 
+# 実settings.jsonはbase+同期方式で生成するためリポジトリ側には置かない
+.claude/settings.json
+
