@@ -22,6 +22,6 @@
     "enabledPlugins": { "share": ["*@claude-plugins-official"], "local": ["*"] },
     "extraKnownMarketplaces": { "share": [], "local": ["*"] }
   },
-  "local": [],
+  "local": ["otelHeadersHelper"],
   "retired": []
 }
