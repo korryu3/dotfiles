@@ -111,6 +111,11 @@
           },
           {
             "type": "command",
+            "command": "~/.claude/hooks/guard-pr-posting.sh",
+            "if": "Bash(gh api graphql*)"
+          },
+          {
+            "type": "command",
             "command": "~/.claude/hooks/guard-env.sh"
           },
           {
