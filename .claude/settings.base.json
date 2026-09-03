@@ -2,7 +2,8 @@
   "cleanupPeriodDays": 9999,
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "CLAUDE_AFK_TIMEOUT_MS": "86400000"
+    "CLAUDE_AFK_TIMEOUT_MS": "86400000",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "opus"
   },
   "permissions": {
     "allow": [
@@ -74,7 +75,7 @@
     "ask": [],
     "defaultMode": "auto"
   },
-  "model": "claude-fable-5[1m]",
+  "model": "fable[1m]",
   "hooks": {
     "SessionStart": [
       {
@@ -184,5 +185,8 @@
     "prototype": "off",
     "drawio": "off",
     "zoom-out": "off"
-  }
+  },
+  "advisorModel": "fable",
+  "switchModelsOnFlag": false,
+  "teammateMode": "auto"
 }

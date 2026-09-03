@@ -15,10 +15,16 @@
     "inputNeededNotifEnabled",
     "agentPushNotifEnabled",
     "skipAutoPermissionPrompt",
-    "skillOverrides"
+    "skillOverrides",
+    "advisorModel",
+    "switchModelsOnFlag",
+    "teammateMode"
   ],
   "merged": {
-    "env": { "share": [], "local": ["OTEL_*", "CLAUDE_CODE_ENABLE_TELEMETRY"] },
+    "env": {
+      "share": ["CLAUDE_CODE_SUBAGENT_MODEL"],
+      "local": ["OTEL_*", "CLAUDE_CODE_ENABLE_TELEMETRY"]
+    },
     "enabledPlugins": { "share": ["*@claude-plugins-official"], "local": ["*"] },
     "extraKnownMarketplaces": { "share": [], "local": ["*"] }
   },
