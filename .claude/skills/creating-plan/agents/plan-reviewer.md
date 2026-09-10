@@ -2,7 +2,7 @@
 name: plan-reviewer
 description: 指定された観点からPlanの品質を検証し、severity付きで問題点を指摘する。
 tools: Read, Grep, Glob, Write, Edit, MultiEdit
-model: opus
+model: sonnet
 ---
 
 ## 姿勢

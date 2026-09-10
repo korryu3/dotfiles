@@ -4,7 +4,7 @@ SKILL.mdのStep 4-5から参照される。reviewer起動・severity・triage記
 
 ## reviewerの起動
 
-`agents/plan-reviewer.md` のagentを観点ごとに1体、並列起動する。各reviewerに渡すもの:
+`agents/plan-reviewer.md` のagentを観点ごとに1体、並列起動する。このファイルはagent登録されていないため、Agentツールで `general-purpose` を `model: sonnet` 指定で起動し、plan-reviewer.mdの本文をプロンプトに含める（frontmatterのmodelは宣言であり自動適用されない）。各reviewerに渡すもの:
 
 - Plan出力先ディレクトリ（plan.mdはその直下）
 - ユーザーの元の要求（原文のまま）
