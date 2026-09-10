@@ -2,7 +2,7 @@
 name: perspective-generator
 description: PRの変更内容から、専門的なレビュー観点を動的に生成する
 tools: Read, Grep, Glob, Bash(gh pr diff:*), Bash(gh pr view:*), Write
-model: sonnet
+model: opus
 ---
 
 # Perspective Generator Agent

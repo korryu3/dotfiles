@@ -16,6 +16,7 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 - 出力先: `~/.claude/context/<PROJECT_ID>/reviews/<branch-name>/`
   - 同名ディレクトリが既に存在する場合は`<branch-name>-1`、`<branch-name>-2`...とサフィックスを付ける
 - エージェントプロンプト: `~/.claude/skills/reviewing-code/agents/`配下を共有参照する（本スキルは独自のagents/を持たない）
+- モデル指定: agents配下のfrontmatterの`model`は宣言であり自動適用されない（agent登録されていないため）。各サブエージェントは`general-purpose`をAgentツールで起動し、本ファイルに記載したmodelを`model`引数で必ず明示する
 
 ## 進捗管理
 
@@ -34,7 +35,7 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 
 ## Phase 2: 動的観点生成
 
-1. **perspective-generator** (`~/.claude/skills/reviewing-code/agents/meta/perspective-generator.md`) のプロンプトでサブエージェントを1体起動し、動的レビュー観点を生成する。プロンプトに以下を追加指示する:
+1. **perspective-generator** (`~/.claude/skills/reviewing-code/agents/meta/perspective-generator.md`) のプロンプトでサブエージェントを1体、`model: opus`で起動し、動的レビュー観点を生成する。プロンプトに以下を追加指示する:
    - 「観点数の上限は5。クリティカルな問題を検出しやすい順に絞ること」
 2. スキップ判断:
    - ドキュメントのみの変更 → 固定枠を全てskipし、動的観点のみ実行
@@ -50,10 +51,10 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 
 プロンプトは`~/.claude/skills/reviewing-code/agents/`配下を使用する:
 
-- **nitpicker** (`meta/nitpicker.md`) — 観点を絞らず気になった点をすべて列挙
-- **bug-scanner** (`correctness/bug-scanner.md`) — diff内の明らかなバグをシャロースキャン
-- **git-history** (`correctness/git-history.md`) — git blame/履歴から歴史的文脈でバグ・退行を発見
-- **security** (`specialist/security.md`) — セキュリティ脆弱性
+- **nitpicker** (`meta/nitpicker.md`, `model: opus`) — 観点を絞らず気になった点をすべて列挙
+- **bug-scanner** (`correctness/bug-scanner.md`, `model: sonnet`) — diff内の明らかなバグをシャロースキャン
+- **git-history** (`correctness/git-history.md`, `model: opus`) — git blame/履歴から歴史的文脈でバグ・退行を発見
+- **security** (`specialist/security.md`, `model: opus`) — セキュリティ脆弱性
 
 ### 共通出力形式
 
@@ -68,7 +69,7 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 
 ### 動的枠レビュアー（最大5体）
 
-Phase 2でperspective-generatorが生成した各観点に対し、サブエージェントを1体ずつ起動する。観点が0個の場合はスキップ。
+Phase 2でperspective-generatorが生成した各観点に対し、サブエージェントを1体ずつ`model: sonnet`で起動する。観点が0個の場合はスキップ。
 
 各動的枠レビュアーのサブエージェントプロンプトに、上記の共通出力形式を指示として含める。
 
@@ -125,7 +126,7 @@ Phase 3の全結果を統合し、重複を排除する:
 
 ### Step 4: 未検証指摘の深掘り調査
 
-Step 3でスコア25（検証できなかった）と判定された指摘に対して、SubAgent(model: Sonnet)を1体ずつ一斉並列起動する。該当がなければスキップ。
+Step 3でスコア25（検証できなかった）と判定された指摘に対して、SubAgentを1体ずつ`model: sonnet`で一斉並列起動する。該当がなければスキップ。
 
 各SubAgentへの指示:
 - 指摘内容とファイル・行番号を渡す
