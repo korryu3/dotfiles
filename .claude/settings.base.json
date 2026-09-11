@@ -75,7 +75,7 @@
     "ask": [],
     "defaultMode": "auto"
   },
-  "model": "fable[1m]",
+  "model": "fable",
   "hooks": {
     "SessionStart": [
       {
