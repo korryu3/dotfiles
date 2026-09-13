@@ -3,11 +3,24 @@ set -u
 
 cat > /dev/null
 
+# Claude Codeのprojects配下のディレクトリ名は、cwdの "/" と "." をどちらも "-" に置換したもの。
+# "/" だけを置換していたため、ドットを含むパスでは
+# ディレクトリが見つからず、以下の検査がすべて無言で素通りしていた。
+# 変換規則が将来変わっても片方が当たるよう、候補を順に試す。
 cwd="$(pwd)"
-slug="${cwd//\//-}"
-memory_dir="$HOME/.claude/projects/${slug}/memory"
+slug_slash_only="${cwd//\//-}"
+slug="${slug_slash_only//./-}"
 
-if [ ! -d "$memory_dir" ]; then
+memory_dir=""
+for candidate in "$slug" "$slug_slash_only"; do
+  if [ -d "$HOME/.claude/projects/${candidate}/memory" ]; then
+    memory_dir="$HOME/.claude/projects/${candidate}/memory"
+    break
+  fi
+done
+
+# どの候補にも無い場合は、メモリ未作成の新規プロジェクトと区別できないので無言で終える
+if [ -z "$memory_dir" ]; then
   exit 0
 fi
 
