@@ -15,7 +15,8 @@ cmd=$(jq -r '.tool_input.command // ""' 2>/dev/null || printf '')
 
 unsafe=$(
   printf '%s' "$cmd" \
-    | grep -oE '\.env[A-Za-z0-9._-]*' \
+    | grep -oE '(^|[^A-Za-z0-9_])\.env[A-Za-z0-9._-]*' \
+    | grep -oE '\.env[A-Za-z0-9._-]*$' \
     | grep -vE '\.(example|sample|template)$' \
     | head -5 \
     || true
