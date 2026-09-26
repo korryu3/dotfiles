@@ -158,6 +158,5 @@
   },
   "env": {
     "CHOKIDAR_USEPOLLING": "true"
-  },
-  "outputStyle": "Explanatory"
+  }
 }
