@@ -81,7 +81,7 @@
         "files.pythonhosted.org",
         "productionresultssa1.blob.core.windows.net:443"
       ],
-      "allowUnixSockets": ["/private/tmp"]
+      "allowUnixSockets": []
     }
   },
   "permissions": {
