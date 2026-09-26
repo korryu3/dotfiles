@@ -25,7 +25,11 @@
         "~/.ssh/id_ed25519.pub",
         "~/.ssh/known_hosts",
         "/**/.pnp.cjs",
-        "/private/etc/ssl/cert.pem"
+        "/private/etc/ssl/cert.pem",
+        "/**/certifi/cacert.pem",
+        "**/site-packages/litellm/proxy/auth/public_key.pem",
+        "/opt/homebrew/etc/ca-certificates/cert.pem",
+        "/opt/homebrew/etc/openssl@3/cert.pem"
       ],
       "denyRead": [
         "~/",
