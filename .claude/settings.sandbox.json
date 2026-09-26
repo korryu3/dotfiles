@@ -97,7 +97,7 @@
       "Read(//**/*.p12*)",
       "Read(//**/*.pfx*)",
       "Read(//**/*.jks*)",
-      "Edit(~/ghq/**/.git/**)",
+      "Edit(//**/.git/**)",
       "Edit(//**/*.env*)",
       "Edit(//**/*id_rsa*)",
       "Edit(//**/*id_ed25519*)",
