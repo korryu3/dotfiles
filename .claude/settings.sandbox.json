@@ -5,7 +5,7 @@
     "allowUnsandboxedCommands": false,
     "autoAllowBashIfSandboxed": false,
     "enableWeakerNetworkIsolation": true,
-    "excludedCommands": ["docker *", "yarn *", "git *"],
+    "excludedCommands": ["docker *", "yarn *", "uv *", "git *"],
     "filesystem": {
       "allowRead": [
         ".",

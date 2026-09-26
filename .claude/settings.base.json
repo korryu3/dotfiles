@@ -188,5 +188,13 @@
   },
   "advisorModel": "fable",
   "switchModelsOnFlag": false,
-  "teammateMode": "auto"
+  "teammateMode": "auto",
+  "sandbox": {
+    "excludedCommands": [
+      "docker *",
+      "yarn *",
+      "uv *",
+      "git *"
+    ]
+  }
 }
