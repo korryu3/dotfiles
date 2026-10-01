@@ -27,7 +27,7 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 ## Phase 1: コンテキスト収集
 
 1. `gh pr view`でPR descriptionと関連issueを取得
-2. 変更ファイルの一覧と変更行数を把握（`gh pr diff --stat`）
+2. 変更ファイルの一覧と変更行数を把握（`gh api repos/{owner}/{repo}/pulls/{n}/files --paginate`）
 3. CLAUDE.mdファイルのパス収集（ルート + 変更ディレクトリ配下）
 4. `.claude/rules/`配下のルールファイル一覧と、変更ファイルに該当するルールの特定
 
