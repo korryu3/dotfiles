@@ -1,7 +1,7 @@
 ---
 name: reviewing-critical
 description: PRのクリティカル指摘（バグ・データ損失・セキュリティ・サイレント不整合）に特化した軽量コードレビュー。固定4+動的最大5観点。日常のセルフレビューや実装途中のチェックで使用する。マージ前の最終レビューや他人のPRの精査にはreviewing-codeを使う。
-allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(gh pr diff:*), Bash(gh pr view:*), Bash(gh api:*), Write, AskUserQuestion, TaskCreate, TaskUpdate
+allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(gh pr diff:*), Bash(gh pr view:*), Bash(gh api:*), Bash(python3:*), Write, AskUserQuestion, TaskCreate, TaskUpdate, Skill
 ---
 
 # Critical Code Review
@@ -242,13 +242,29 @@ Phase 4のトリアージ結果に基づき、**must-fix**, **should-fix**の指
 
 ### 投稿方法
 
-`gh api repos/{owner}/{repo}/pulls/{number}/reviews`でインラインコメント付きレビューを投稿する。
-REQUEST_CHANGESは自身のPRでは使えないため、`event=COMMENT`で投稿すべき。
+`Skill(posting-pr-review)`を起動し、その手順に従って投稿する。
+
+- 投稿の成果物は**pendingレビュー（下書き）**であり、即公開はしない。submitはユーザーがGitHub UIで行う
 - must-fix/should-fixがいずれもない場合: 投稿しない
 
 ### コメントのフォーマット
 
-must-fix / should-fixの各インラインコメント（出所ラベルなし）:
+投稿先で書式を切り替える:
+
+| 投稿先 | 文体・構造 | footer |
+|---|---|---|
+| 他人のPR | `review-comment-style`スキルの文体規範に従う（下記の構造フォーマットは使わない） | 維持 |
+| 自分のPRへのセルフレビュー | 下記の構造フォーマット | 維持 |
+
+footerは`🤖 Generated with [Claude Code](https://claude.com/claude-code)`。ユーザーがsubmit時に確認して不要なら手動削除する運用のため、投稿時は常に付ける。
+
+他人のPRでのアクションレベルとラベルの対応（review-comment-styleのラベル体系に合わせる）:
+
+- must-fix → `[must-fix]`
+- should-fix → ラベルなしの通常依頼（`[should-fix]`というラベルは存在しない）
+- `[imo]`はトリアージ外で任意度の高い意見を投稿する場合のみ使う
+
+自分のPRへのセルフレビューでのmust-fix / should-fixの各インラインコメント（出所ラベルなし）:
 ````
 🔴 **[must-fix]** JWTの有効期限がハードコードされている
 
@@ -263,16 +279,6 @@ const JWT_EXPIRY = process.env.JWT_EXPIRY ?? 3600;
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ````
 
-「理由: 要調査」の場合はWhyブロックを省略する。
-
-レビュー本文（body）も更新:
-````
-Critical Code Review: N件の指摘（must-fix: X件, should-fix: Y件）
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-````
-
-### 注意事項
-
-- `position`はdiffのハンク内の行位置（ファイルの絶対行番号ではない）
-- 明示的な指示がない場合、PR投稿はskipする
+- 「理由: 要調査」の場合はWhyブロックを省略する
+- suggestionブロックはdiff内の行のみ置換可能なため、使える場合のみ使用する
+- レビュー本文（body）にサマリ定型文は載せない。submit時の全体コメントはユーザーがUIで書く
