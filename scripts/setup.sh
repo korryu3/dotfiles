@@ -40,5 +40,17 @@ else
   echo "  スキップ (uv未インストール): Python"
 fi
 
+# Colima (ログイン時に自動起動)
+if command -v colima &>/dev/null; then
+  if brew services list | grep -qE '^colima\s+started'; then
+    echo "  Colima 自動起動: 設定済み"
+  else
+    echo "  Colima の自動起動を設定中..."
+    brew services start colima
+  fi
+else
+  echo "  スキップ (colima未インストール): Colima 自動起動"
+fi
+
 echo ""
 echo "完了!"
