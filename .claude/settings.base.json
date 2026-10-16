@@ -3,7 +3,8 @@
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_AFK_TIMEOUT_MS": "86400000",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "opus"
+    "CLAUDE_CODE_SUBAGENT_MODEL": "opus",
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/.claude/mods/usage-band"
   },
   "permissions": {
     "allow": [

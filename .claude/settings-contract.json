@@ -22,7 +22,7 @@
   ],
   "merged": {
     "env": {
-      "share": ["CLAUDE_CODE_SUBAGENT_MODEL"],
+      "share": ["CLAUDE_CODE_SUBAGENT_MODEL", "CLAUDE_CODE_PLUGIN_DIRS"],
       "local": ["OTEL_*", "CLAUDE_CODE_ENABLE_TELEMETRY"]
     },
     "enabledPlugins": { "share": ["*@claude-plugins-official"], "local": ["*"] },

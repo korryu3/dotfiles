@@ -1,0 +1,6 @@
+{
+  "name": "usage-band",
+  "version": "0.1.0",
+  "description": "Show context and 5h rate-limit usage above the prompt",
+  "types": "./types/index.d.ts"
+}

@@ -30,6 +30,7 @@ FILES=(
   .claude/skills
   .claude/hooks
   .claude/scripts
+  .claude/mods
   .config/bat/config
   .config/nvim
 )
