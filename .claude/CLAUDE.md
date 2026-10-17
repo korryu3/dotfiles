@@ -7,7 +7,7 @@
 
 - TDDで開発する
   - 開発時は`/tdd`スキルを使うこと。
-- バグ調査・デバッグ時は`/diagnose`スキルを使うこと（`superpowers:systematic-debugging`は使わない）
+- バグ調査・デバッグ時は`/diagnose`スキルを使うこと
 - 要件定義など上流工程で仕様が多く、抜け漏れが出やすいときは`/grill-with-docs`の起動を提案する（ユーザー自身が認識していない暗黙の前提を顕在化するため）
 - 不明瞭な指示は質問して明確にする
 
@@ -44,6 +44,5 @@
 - 使ってない/役割の終えたチームメイトはshutdownさせる
 - PR作成ルール：draft, ユーザーをアサインする
 - ユーザーの指示や許可がない限りサーバー起動は自力でやらない。
-- superpowers系のskillの出力はcommitしない(gitignore済み)
 - Monitorの中ではghを使わない
   - ghのtoken注入hookがBashツールにしか効かず、Monitorでは認証が通らないため。

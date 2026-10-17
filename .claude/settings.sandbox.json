@@ -18,7 +18,6 @@
         "~/.local/share",
         "~/.local/bin",
         "~/.prefect",
-        "~/.serena",
         "~/.gitconfig",
         "~/.config/git",
         "~/.config/gh",
@@ -50,8 +49,7 @@
         "~/.cache/yarn",
         "~/.yarn",
         "~/.claude/context",
-        "~/.prefect",
-        "~/.serena"
+        "~/.prefect"
       ],
       "denyWrite": [
         "/**/*.env*",
