@@ -164,7 +164,6 @@
   },
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
     "slack@claude-plugins-official": true,
     "notion@claude-plugins-official": true
   },

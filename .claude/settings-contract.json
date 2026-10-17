@@ -31,6 +31,7 @@
   "local": ["otelHeadersHelper"],
   "retired": [
     "enabledPlugins.superpowers@claude-plugins-official",
-    "enabledPlugins.skill-creator@claude-plugins-official"
+    "enabledPlugins.skill-creator@claude-plugins-official",
+    "enabledPlugins.context7@claude-plugins-official"
   ]
 }
