@@ -177,9 +177,7 @@
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
   "skillOverrides": {
-    "prototype": "off",
-    "drawio": "off",
-    "zoom-out": "off"
+    "drawio": "off"
   },
   "advisorModel": "fable",
   "switchModelsOnFlag": false,

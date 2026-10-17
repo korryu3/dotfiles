@@ -17,6 +17,7 @@
 **/.claude/routines/.state/
 **/.claude/worktrees/
 **/.claude/checkpoints/
+**/.claude/skills/synced/
 **/.claude/mailbox/
 **/.claude/agent-registry.json
 **/.claude/agent-memory-local
