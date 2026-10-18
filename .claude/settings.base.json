@@ -172,7 +172,8 @@
       "source": {
         "source": "github",
         "repo": "cursor/plugins"
-      }
+      },
+      "autoUpdate": true
     }
   },
   "outputStyle": "Concise",
