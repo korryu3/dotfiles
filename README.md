@@ -44,4 +44,3 @@ brew bundle cleanup --file=~/ghq/github.com/korryu3/dotfiles/Brewfile --force  #
 - [x] macOS system defaults (Dock, Finder, key repeat etc.)
 - [ ] Nix Home Manager migration
 - [ ] VSCode Settings Sync
-- [ ] Serena config (`~/.serena/serena_config.yml`) の管理（`projects` リストがPC固有で自動更新されるため要検討）
