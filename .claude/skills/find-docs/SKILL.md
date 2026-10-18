@@ -21,11 +21,11 @@ description: >-
 
 Retrieve current documentation and code examples for any library using the Context7 CLI.
 
-Run commands with `npx ctx7@latest` so setup always uses the latest CLI without a global install:
+Run commands with `NODE_USE_SYSTEM_CA=0 npx ctx7@latest` so setup always uses the latest CLI without a global install. Always keep the `NODE_USE_SYSTEM_CA=0` prefix: with system CAs enabled, Node reads the macOS Keychain at startup and fails inside the sandbox (`SecItemCopyMatching failed`).
 
 ```bash
-npx ctx7@latest library <name> "<query>"
-npx ctx7@latest docs <libraryId> "<query>"
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest library <name> "<query>"
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest docs <libraryId> "<query>"
 ```
 
 Optionally install globally if you prefer a bare `ctx7` command:
@@ -40,10 +40,10 @@ Two-step process: resolve the library name to an ID, then query docs with that I
 
 ```bash
 # Step 1: Resolve library ID
-npx ctx7@latest library <name> "<query>"
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest library <name> "<query>"
 
 # Step 2: Query documentation
-npx ctx7@latest docs <libraryId> "<query>"
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest docs <libraryId> "<query>"
 ```
 
 You MUST call `library` first to obtain a valid library ID UNLESS the user explicitly provides a library ID in the format `/org/project` or `/org/project/version`.
@@ -55,9 +55,9 @@ IMPORTANT: Do not run these commands more than 3 times per question. If you cann
 Resolves a package/product name to a Context7-compatible library ID and returns matching libraries.
 
 ```bash
-npx ctx7@latest library React "How to clean up useEffect with async operations"
-npx ctx7@latest library "Next.js" "How to set up app router with a proxy"
-npx ctx7@latest library Prisma "How to define one-to-many relations with cascade delete"
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest library React "How to clean up useEffect with async operations"
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest library "Next.js" "How to set up app router with a proxy"
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest library Prisma "How to define one-to-many relations with cascade delete"
 ```
 
 Use the official library name with proper punctuation (e.g., "Next.js" not "nextjs", "Customer.io" not "customerio", "Three.js" not "threejs"). If results look wrong, try alternate spellings such as `next.js` before changing the query.
@@ -95,10 +95,10 @@ If the user mentions a specific version, use a version-specific library ID:
 
 ```bash
 # General (latest indexed)
-npx ctx7@latest docs /vercel/next.js "How to set up app router"
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest docs /vercel/next.js "How to set up app router"
 
 # Version-specific
-npx ctx7@latest docs /vercel/next.js/v16.2.9 "How to set up app router"
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest docs /vercel/next.js/v16.2.9 "How to set up app router"
 ```
 
 The available versions are listed in the `library` command output. Use the closest match to what the user specified.
@@ -108,15 +108,15 @@ The available versions are listed in the `library` command output. Use the close
 Retrieves up-to-date documentation and code examples for the resolved library.
 
 ```bash
-npx ctx7@latest docs /facebook/react "How to clean up useEffect with async operations"
-npx ctx7@latest docs /vercel/next.js "How to add an authentication proxy to app router"
-npx ctx7@latest docs /prisma/prisma "How to define one-to-many relations with cascade delete"
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest docs /facebook/react "How to clean up useEffect with async operations"
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest docs /vercel/next.js "How to add an authentication proxy to app router"
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest docs /prisma/prisma "How to define one-to-many relations with cascade delete"
 ```
 
 If you know the programming language the user writes in, add `--language` so code examples in that language rank first:
 
 ```bash
-npx ctx7@latest docs /websites/twilio "How to send an SMS" --language Ruby
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest docs /websites/twilio "How to send an SMS" --language Ruby
 ```
 
 ### Writing good queries
@@ -144,7 +144,7 @@ Works without authentication. For higher rate limits:
 export CONTEXT7_API_KEY=your_key
 
 # Option B: OAuth login
-npx ctx7@latest login
+NODE_USE_SYSTEM_CA=0 npx ctx7@latest login
 ```
 
 ## Error Handling
