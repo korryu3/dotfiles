@@ -18,7 +18,9 @@
     "skillOverrides",
     "advisorModel",
     "switchModelsOnFlag",
-    "teammateMode"
+    "teammateMode",
+    "attribution",
+    "idleCompaction"
   ],
   "merged": {
     "env": {
@@ -26,7 +28,8 @@
       "local": ["OTEL_*", "CLAUDE_CODE_ENABLE_TELEMETRY"]
     },
     "enabledPlugins": { "share": ["*@claude-plugins-official", "pstack@cursor-plugins"], "local": ["*"] },
-    "extraKnownMarketplaces": { "share": ["cursor-plugins"], "local": ["*"] }
+    "extraKnownMarketplaces": { "share": ["cursor-plugins"], "local": ["*"] },
+    "sandbox": { "share": ["excludedCommands"], "local": ["*"] }
   },
   "local": ["otelHeadersHelper"],
   "retired": [
