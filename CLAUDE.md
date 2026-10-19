@@ -8,3 +8,4 @@
   - キーの分類（shared/merged/local）は`.claude/settings-contract.json`で定義する
   - 実ファイル側で育った設定を共有したいときは`claude_settings_sync.py promote <key>`でbaseへ昇格してコミットする
   - マシン固有の設定は実ファイルにのみ置き、baseに入れない
+- 小さく自己完結した変更はmainに直接commitしてpushしてよい（個人のリポジトリで、PRのフローは後始末が増えるだけのため）。force pushはせず、履歴の改変や大きな構造変更だけ事前に確認する
