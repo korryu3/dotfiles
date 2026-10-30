@@ -14,6 +14,7 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 - 出力先: `~/.claude/context/<PROJECT_ID>/reviews/<branch-name>/`
   - 同名ディレクトリが既に存在する場合は`<branch-name>-1`、`<branch-name>-2`...とサフィックスを付ける
   - Phase 1の最初に、`~`とPROJECT_IDを展開した絶対パスに解決し、以降はその文字列だけを使う。`~/.claude/projects/`の命名はドットもハイフンにするため、組み立て直すと別のディレクトリになる
+- サブエージェントの中からこのスキルを起動した場合は、`references/subagent-invocation.md`を読んでから進める
 
 ## 進捗管理
 

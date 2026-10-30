@@ -17,6 +17,7 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
   - 同名ディレクトリが既に存在する場合は`<branch-name>-1`、`<branch-name>-2`...とサフィックスを付ける
   - Phase 1の最初に、`~`とPROJECT_IDを展開した絶対パスに解決し、以降はその文字列だけを使う。`~/.claude/projects/`の命名はドットもハイフンにするため、組み立て直すと別のディレクトリになる
 - エージェントプロンプト: `~/.claude/skills/reviewing-code/agents/`配下を共有参照する（本スキルは独自のagents/を持たない）
+- サブエージェントの中からこのスキルを起動した場合は、`~/.claude/skills/reviewing-code/references/subagent-invocation.md`を読んでから進める
 - モデル指定: agents配下のfrontmatterの`model`は宣言であり自動適用されない（agent登録されていないため）。各サブエージェントは`general-purpose`をAgentツールで起動し、本ファイルに記載したmodelを`model`引数で必ず明示する
 
 ## 進捗管理
