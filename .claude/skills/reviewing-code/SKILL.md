@@ -13,6 +13,7 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 - PROJECT_ID: `~/.claude/scripts/project-id.sh`を実行して取得する
 - 出力先: `~/.claude/context/<PROJECT_ID>/reviews/<branch-name>/`
   - 同名ディレクトリが既に存在する場合は`<branch-name>-1`、`<branch-name>-2`...とサフィックスを付ける
+  - Phase 1の最初に、`~`とPROJECT_IDを展開した絶対パスに解決し、以降はその文字列だけを使う。`~/.claude/projects/`の命名はドットもハイフンにするため、組み立て直すと別のディレクトリになる
 
 ## 進捗管理
 
@@ -44,7 +45,7 @@ allowed-tools: Agent, Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(
 
 **固定枠 + 動的枠を全て1ターンで一斉並列起動する。**
 
-各サブエージェントにはPR descriptionと担当観点の指示に加え、「結果を `{出力先ディレクトリ}/{レビュアー名}.md` にWriteで書き出すこと」を指示する。
+各サブエージェントにはPR descriptionと担当観点の指示に加え、「結果を `<出力先の絶対パス>/{レビュアー名}.md` にWriteで書き出すこと」を指示する。出力先は解決済みの絶対パスの文字列をそのまま埋め込み、「このパスをそのまま使い、PROJECT_IDや`~`を自分で組み立て直さないこと」と添える。出力先に置いた共有ファイル（diffなど）を読ませるときも、同じ絶対パスで渡す。
 
 ### 固定枠レビュアー（最大14体、Phase 2のスキップ判断で絞られる）
 
