@@ -88,7 +88,6 @@ cask "rectangle"
 cask "scroll-reverser"
 cask "slack"
 cask "usage-app"
-cask "visual-studio-code"
 cask "zen"
 cask "zoom"
 
