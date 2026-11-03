@@ -5,7 +5,7 @@ sys.dont_write_bytecode = True
 import json
 import os
 
-__version__ = "2.3.0"
+__version__ = "2.5.0"
 _EVENTS = ("UserPromptExpansion", "UserPromptSubmit", "PreToolUse", "PostToolUse", "Stop", "SessionEnd")
 _BUDGETS = {"UserPromptExpansion": 4, "UserPromptSubmit": 4, "PreToolUse": 7,
             "PostToolUse": 7, "Stop": 20, "SessionEnd": 0.8}
@@ -33,7 +33,7 @@ _HELP = """使い方: yomiyasu_hook.py --host claude-code|codex [--state-dir DIR
                             両方あればどちらも付けません）。どちらも省くと、run が自分で .yomiyasu-words/ を探します。
   --print-config claude-code|codex
                             設定に貼る JSON の例（このスクリプトの絶対パス入り）を出します。設定ファイルには書き込みません。
-  --version                 版を表示して終わります。
+  --version                 バージョンを表示して終わります。
   -h, --help                このヘルプを表示して終わります。
 
 終了コード:
