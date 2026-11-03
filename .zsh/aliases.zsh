@@ -37,7 +37,7 @@ alias gsid='git switch $(git remote show origin | grep "HEAD branch" | awk "{pri
 
 # Docker
 alias d="docker"
-alias dcm="docker-compose"
+alias dcm="docker compose"
 
 # Terraform
 alias tf="terraform"
