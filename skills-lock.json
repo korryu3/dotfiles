@@ -25,6 +25,12 @@
       "skillPath": "skills/productivity/grilling/SKILL.md",
       "computedHash": "e40cc1d348f6d935e28f1e24474302d7368f0a400429271a43b35fe154891dc5"
     },
+    "imozuru": {
+      "source": "MaryCache/imozuru",
+      "sourceType": "github",
+      "skillPath": "skills/imozuru/SKILL.md",
+      "computedHash": "b8396f02284948c2086ca8a4adea4d75ea50aa89467c9e50c88b4f511925785f"
+    },
     "yomiyasu": {
       "source": "nanaism/yomiyasu",
       "sourceType": "github",
