@@ -1,5 +1,6 @@
 [tools]
 python = "latest"
+railway = "latest"
 ruby = "3"
 
 [settings]

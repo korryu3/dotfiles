@@ -30,7 +30,8 @@
         "/**/certifi/cacert.pem",
         "**/site-packages/litellm/proxy/auth/public_key.pem",
         "/opt/homebrew/etc/ca-certificates/cert.pem",
-        "/opt/homebrew/etc/openssl@3/cert.pem"
+        "/opt/homebrew/etc/openssl@3/cert.pem",
+        "/opt/homebrew/Library/Homebrew/api/homebrew-*.pem"
       ],
       "denyRead": [
         "~/",

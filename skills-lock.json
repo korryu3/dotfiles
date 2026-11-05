@@ -31,6 +31,12 @@
       "skillPath": "skills/imozuru/SKILL.md",
       "computedHash": "b8396f02284948c2086ca8a4adea4d75ea50aa89467c9e50c88b4f511925785f"
     },
+    "to-questionnaire": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/to-questionnaire/SKILL.md",
+      "computedHash": "befbec7005695163741a57bc94810dc5048fb766baaa485d5160b1d7f86335c1"
+    },
     "yomiyasu": {
       "source": "nanaism/yomiyasu",
       "sourceType": "github",

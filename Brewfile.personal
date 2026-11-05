@@ -1,6 +1,8 @@
 tap "gcenx/wine"
+brew "flyctl"
 brew "mas"
 brew "winetricks"
+cask "bitwarden"
 cask "codex"
 cask "codex-app"
 cask "cyberduck"
