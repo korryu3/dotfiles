@@ -27,8 +27,8 @@
       "share": ["CLAUDE_CODE_SUBAGENT_MODEL", "CLAUDE_CODE_PLUGIN_DIRS"],
       "local": ["OTEL_*", "CLAUDE_CODE_ENABLE_TELEMETRY"]
     },
-    "enabledPlugins": { "share": ["*@claude-plugins-official", "pstack@cursor-plugins"], "local": ["*"] },
-    "extraKnownMarketplaces": { "share": ["cursor-plugins"], "local": ["*"] },
+    "enabledPlugins": { "share": ["*@claude-plugins-official", "pstack@cursor-plugins", "visual-explainer@visual-explainer-marketplace"], "local": ["*"] },
+    "extraKnownMarketplaces": { "share": ["cursor-plugins", "visual-explainer-marketplace"], "local": ["*"] },
     "sandbox": { "share": ["excludedCommands"], "local": ["*"] }
   },
   "local": ["otelHeadersHelper"],
