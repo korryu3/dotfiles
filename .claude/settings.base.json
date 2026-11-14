@@ -192,8 +192,8 @@
     },
     "visual-explainer-marketplace": {
       "source": {
-        "source": "git",
-        "url": "https://github.com/nicobailon/visual-explainer.git"
+        "source": "github",
+        "repo": "nicobailon/visual-explainer"
       }
     }
   },
