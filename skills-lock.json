@@ -1,47 +1,48 @@
 {
-  "version": 1,
+  "version": 2,
   "skills": {
     "diagnosing-bugs": {
       "source": "mattpocock/skills",
       "sourceType": "github",
       "skillPath": "skills/engineering/diagnosing-bugs/SKILL.md",
-      "computedHash": "ede7254edbd22fcab97a0941511f7d440d8f9a249348fea97c50987ad5501674"
+      "computedHash": ""
     },
     "domain-modeling": {
       "source": "mattpocock/skills",
       "sourceType": "github",
       "skillPath": "skills/engineering/domain-modeling/SKILL.md",
-      "computedHash": "b3eb40152b81f0c98fd2095a023c019452dbdce56f7540cc67fece2972db8369"
+      "computedHash": ""
     },
     "grill-with-docs": {
       "source": "mattpocock/skills",
       "sourceType": "github",
       "skillPath": "skills/engineering/grill-with-docs/SKILL.md",
-      "computedHash": "35e62aa423aaeab6a414bcac273f56dfb17802ef2334b41b6a3b00f28196c8cf"
+      "computedHash": "02e258f41d210f9b2e7cce9faf62b3c59e8fcebe5d2736369c3cd07d471324f8"
     },
     "grilling": {
       "source": "mattpocock/skills",
       "sourceType": "github",
       "skillPath": "skills/productivity/grilling/SKILL.md",
-      "computedHash": "e40cc1d348f6d935e28f1e24474302d7368f0a400429271a43b35fe154891dc5"
+      "computedHash": "485451958784497cd4c4dbea13cb5bbb579da58fac0d0e45f3bcb310fab68ac7"
     },
     "imozuru": {
       "source": "MaryCache/imozuru",
       "sourceType": "github",
       "skillPath": "skills/imozuru/SKILL.md",
-      "computedHash": "b8396f02284948c2086ca8a4adea4d75ea50aa89467c9e50c88b4f511925785f"
+      "computedHash": "4768b9ffaffb4424c5f2269a3646cbfcd5b7d78b933155199ca1e29ead5e6a1c"
     },
     "to-questionnaire": {
       "source": "mattpocock/skills",
       "sourceType": "github",
       "skillPath": "skills/productivity/to-questionnaire/SKILL.md",
-      "computedHash": "befbec7005695163741a57bc94810dc5048fb766baaa485d5160b1d7f86335c1"
+      "computedHash": "0bcb2b31a45a3d176daa07c16d6532ee7819b802de081090c3fa856702767b13"
     },
     "yomiyasu": {
       "source": "nanaism/yomiyasu",
       "sourceType": "github",
       "skillPath": "skills/yomiyasu/SKILL.md",
-      "computedHash": "931929b8d7be2c1413927dec7c7ad44b2fba5caee2cd8394a52e7727d3a2c959"
+      "computedHash": "713c7534b4d2d81048d604e2729e5e7306a78da9f5831377b4904a5c7694507a",
+      "commit": "db78b9bc5e868549b517a037df7a4d1c93edac23"
     }
   }
 }
