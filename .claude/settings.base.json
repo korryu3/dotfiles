@@ -84,6 +84,10 @@
           },
           {
             "type": "command",
+            "command": "~/.claude/hooks/check-active-tasks.py"
+          },
+          {
+            "type": "command",
             "command": "~/.claude/scripts/claude_settings_sync.py check --hook"
           }
         ]
